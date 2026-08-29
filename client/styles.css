@@ -1,0 +1,123 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ---------------------------------------------------------------------------
+   Hexocode design tokens — change the brand here, everywhere updates.
+   Brand: primary #173D2D · secondary #285B43 · gold #B7A35A
+          dark bg #0A2017 · light bg #EFF4F0
+--------------------------------------------------------------------------- */
+:root {
+  --font-heading: 'Space Grotesk', 'Inter', system-ui, sans-serif;
+  --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+
+  --background: 141 33% 96%;
+  --foreground: 148 52% 9%;
+  --card: 0 0% 100%;
+  --card-foreground: 148 52% 9%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 148 52% 9%;
+  --primary: 149 45% 16%;
+  --primary-foreground: 120 20% 96%;
+  --secondary: 147 39% 26%;
+  --secondary-foreground: 120 20% 96%;
+  --muted: 140 16% 90%;
+  --muted-foreground: 150 12% 38%;
+  --accent: 147 39% 26%;
+  --accent-foreground: 120 20% 96%;
+  --gold: 46 38% 53%;
+  --gold-foreground: 148 52% 9%;
+  --destructive: 0 62% 45%;
+  --destructive-foreground: 0 0% 98%;
+  --border: 144 15% 84%;
+  --input: 144 15% 80%;
+  --ring: 46 38% 53%;
+  --radius: 0.625rem;
+}
+
+.dark {
+  --background: 152 52% 8%;
+  --foreground: 120 18% 94%;
+  --card: 150 44% 11%;
+  --card-foreground: 120 18% 94%;
+  --popover: 150 44% 11%;
+  --popover-foreground: 120 18% 94%;
+  --primary: 120 20% 94%;
+  --primary-foreground: 149 45% 14%;
+  --secondary: 149 34% 20%;
+  --secondary-foreground: 120 18% 94%;
+  --muted: 150 30% 16%;
+  --muted-foreground: 120 10% 62%;
+  --accent: 149 39% 26%;
+  --accent-foreground: 120 20% 94%;
+  --gold: 46 38% 53%;
+  --gold-foreground: 148 52% 9%;
+  --destructive: 0 55% 42%;
+  --destructive-foreground: 0 0% 98%;
+  --border: 150 26% 19%;
+  --input: 150 26% 24%;
+  --ring: 46 38% 53%;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-background text-foreground font-body antialiased;
+  }
+  h1, h2, h3, h4 {
+    @apply font-heading;
+  }
+  ::selection {
+    background: hsl(var(--gold) / 0.35);
+  }
+  :focus-visible {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
+  }
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--muted-foreground) / 0.35);
+    border-radius: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+}
+
+@layer components {
+  /* Brand surface pattern: fine dot grid used in hero / CTA bands */
+  .surface-grid {
+    background-image: radial-gradient(hsl(var(--gold) / 0.14) 1px, transparent 1px);
+    background-size: 26px 26px;
+  }
+  .surface-grid-soft {
+    background-image: radial-gradient(hsl(var(--foreground) / 0.05) 1px, transparent 1px);
+    background-size: 26px 26px;
+  }
+  .text-balance {
+    text-wrap: balance;
+  }
+  .prose-hexo p {
+    @apply mb-4 leading-relaxed text-muted-foreground;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
