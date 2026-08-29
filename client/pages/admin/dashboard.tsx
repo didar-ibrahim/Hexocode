@@ -1,8 +1,8 @@
 import { AdminLayout } from './layout'
-import { useApi, usePageMeta } from '../../lib/hooks'
-import { api, ContactMessage } from '../../lib/api'
+import { usePageMeta } from '../../lib/hooks'
 import { Link } from '../../components/link'
-import { Card, Badge, FullPageLoading, ErrorState } from '../../components/ui'
+import { Card, Badge } from '../../components/ui'
+import type { ContactMessage } from '../../lib/api'
 import {
   FolderKanban, Layers, Package, Inbox, MessageSquareQuote, Star, FileText, Activity,
 } from 'lucide-react'
@@ -24,6 +24,24 @@ type DashboardData = {
   }
   activity: { id: number; action: string; entity: string; entity_title: string; created_at: string; user_name: string | null }[]
   latestMessages: Pick<ContactMessage, 'id' | 'name' | 'email' | 'company' | 'project_type' | 'status' | 'created_at'>[]
+}
+
+const EMPTY_DASHBOARD: DashboardData = {
+  stats: {
+    totalProjects: 0,
+    publishedProjects: 0,
+    draftProjects: 0,
+    featuredProjects: 0,
+    totalServices: 0,
+    totalPackages: 0,
+    publishedPackages: 0,
+    newMessages: 0,
+    totalMessages: 0,
+    publishedTestimonials: 0,
+    totalTestimonials: 0,
+  },
+  activity: [],
+  latestMessages: [],
 }
 
 function StatCard({ href, Icon, label, value, hint, accent }: { href: string; Icon: typeof FolderKanban; label: string; value: number; hint?: string; accent?: boolean }) {
@@ -56,16 +74,11 @@ function timeAgo(iso: string): string {
 
 export default function AdminDashboard() {
   usePageMeta('Dashboard — Hexocode Admin')
-  const { data, loading, error, refetch } = useApi<DashboardData>(() => api.get('/api/admin/dashboard'))
+  const data = EMPTY_DASHBOARD
 
   return (
     <AdminLayout title="Dashboard">
-      {loading ? (
-        <FullPageLoading />
-      ) : error || !data ? (
-        <ErrorState message={error || 'Failed to load dashboard'} onRetry={refetch} />
-      ) : (
-        <div className="space-y-8">
+      <div className="space-y-8">
           <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
             <StatCard href="/admin/projects" Icon={FolderKanban} label="Projects" value={data.stats.totalProjects} hint={`${data.stats.publishedProjects} published · ${data.stats.draftProjects} drafts`} />
             <StatCard href="/admin/projects" Icon={Star} label="Featured projects" value={data.stats.featuredProjects} hint="Shown on homepage" />
@@ -150,8 +163,7 @@ export default function AdminDashboard() {
               </Link>
             </div>
           </Card>
-        </div>
-      )}
+      </div>
     </AdminLayout>
   )
 }
