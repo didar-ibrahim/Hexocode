@@ -8,6 +8,7 @@ import { SiteProvider } from './lib/site'
 import { AuthProvider } from './lib/auth'
 import { Toaster } from './components/ui'
 import { Link } from './components/link'
+import { HexField } from './components/HexField'
 
 import HomePage from './pages/home'
 import ProjectsPage from './pages/projects'
@@ -31,13 +32,19 @@ import AdminProfilePage from './pages/admin/profile'
 
 function NotFoundPage() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center gap-4 bg-background px-6 text-center">
-      <p className="font-mono text-6xl font-bold text-muted-foreground">404</p>
-      <h1 className="text-2xl font-semibold text-foreground">Page not found</h1>
-      <p className="text-muted-foreground">The page you are looking for does not exist or has been moved.</p>
-      <Link href="/" className="text-sm font-medium text-primary underline underline-offset-4">
-        Back to homepage
-      </Link>
+    <main className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-6 text-center">
+      <HexField className="absolute inset-0 h-full w-full" />
+      <div className="glass-strong relative z-10 max-w-md rounded-3xl px-8 py-12">
+        <p className="font-heading text-6xl font-bold tracking-tight text-accent-metal">404</p>
+        <h1 className="mt-4 text-2xl font-semibold text-foreground">Page not found</h1>
+        <p className="mt-2 text-muted-foreground">The page you are looking for does not exist or has been moved.</p>
+        <Link
+          href="/"
+          className="mt-6 inline-flex font-mono text-[11px] uppercase tracking-[0.22em] text-gold"
+        >
+          Back to homepage
+        </Link>
+      </div>
     </main>
   )
 }

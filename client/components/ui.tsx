@@ -12,9 +12,9 @@ type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
 
 export function Button({ variant = 'default', size = 'md', loading, className, children, disabled, ...props }: ButtonProps) {
   const variants = {
-    default: 'bg-primary text-primary-foreground hover:opacity-90',
-    gold: 'bg-gold text-gold-foreground hover:brightness-110',
-    outline: 'border border-border bg-transparent hover:bg-accent/15 text-foreground',
+    default: 'text-primary-foreground hover:opacity-90 [background:var(--gradient-brand)]',
+    gold: 'relative overflow-hidden text-primary-foreground hover:brightness-110 [background:var(--gradient-brand)]',
+    outline: 'glass text-foreground hover:scale-[1.02]',
     ghost: 'hover:bg-accent/15 text-foreground',
     destructive: 'bg-destructive text-destructive-foreground hover:opacity-90',
     secondary: 'bg-secondary text-secondary-foreground hover:opacity-90',
@@ -43,7 +43,7 @@ export function Input({ className, ...props }: InputHTMLAttributes<HTMLInputElem
   return (
     <input
       className={cn(
-        'flex h-10 w-full rounded-md border border-input bg-transparent px-3 text-sm',
+        'flex h-10 w-full rounded-full border border-input bg-transparent px-4 text-sm glass',
         'placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60',
         className
       )}
@@ -56,7 +56,7 @@ export function Textarea({ className, ...props }: TextareaHTMLAttributes<HTMLTex
   return (
     <textarea
       className={cn(
-        'flex min-h-[100px] w-full rounded-md border border-input bg-transparent px-3 py-2 text-sm',
+        'flex min-h-[100px] w-full rounded-2xl border border-input bg-transparent px-4 py-3 text-sm glass',
         'placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-60',
         'focus-visible:ring-2 focus-visible:ring-ring/60',
         className
@@ -70,7 +70,7 @@ export function Select({ className, children, ...props }: SelectHTMLAttributes<H
   return (
     <select
       className={cn(
-        'flex h-10 w-full rounded-md border border-input bg-card px-3 text-sm',
+        'flex h-10 w-full rounded-full border border-input bg-card px-4 text-sm glass',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60',
         className
       )}
@@ -147,8 +147,8 @@ export function Card({ children, className, hover }: { children: ReactNode; clas
   return (
     <div
       className={cn(
-        'rounded-lg border border-border bg-card text-card-foreground',
-        hover && 'transition-all duration-300 hover:-translate-y-1 hover:border-gold/40 hover:shadow-lg hover:shadow-black/20',
+        'glass relative overflow-hidden rounded-2xl text-card-foreground',
+        hover && 'transition-all duration-500 hover:-translate-y-2',
         className
       )}
     >
@@ -172,9 +172,12 @@ export function SectionHeading({
   return (
     <div className={cn('mb-12 max-w-2xl', align === 'center' ? 'mx-auto text-center' : '')}>
       {eyebrow && (
-        <p className="mb-3 font-mono text-xs font-medium uppercase tracking-[0.2em] text-gold">{eyebrow}</p>
+        <p className="mb-3 font-mono text-[10px] font-medium uppercase tracking-[0.3em] text-gold">{eyebrow}</p>
       )}
-      <h2 className="text-balance text-3xl font-bold tracking-tight md:text-4xl">{title}</h2>
+      <div className={cn('flex items-center gap-4', align === 'center' && 'justify-center')}>
+        <h2 className="text-balance font-heading text-3xl font-bold tracking-tight md:text-4xl">{title}</h2>
+        {align === 'left' && <div className="accent-rule hidden flex-1 sm:block" />}
+      </div>
       {description && <p className="mt-4 leading-relaxed text-muted-foreground">{description}</p>}
     </div>
   )
@@ -210,7 +213,7 @@ export function Modal({
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm animate-fade-in" onClick={onClose} />
       <div
         className={cn(
-          'relative max-h-[90vh] w-full overflow-y-auto rounded-lg border border-border bg-card p-6 shadow-2xl animate-fade-up',
+          'glass-strong relative max-h-[90vh] w-full overflow-y-auto rounded-2xl p-6 animate-fade-up',
           wide ? 'max-w-3xl' : 'max-w-md'
         )}
       >
@@ -303,7 +306,7 @@ export function Skeleton({ className }: { className?: string }) {
 
 export function EmptyState({ icon, title, description, action }: { icon?: ReactNode; title: string; description?: string; action?: ReactNode }) {
   return (
-    <div className="flex flex-col items-center justify-center rounded-lg border border-dashed border-border px-6 py-16 text-center">
+    <div className="glass flex flex-col items-center justify-center rounded-2xl border-dashed px-6 py-16 text-center">
       {icon && <div className="mb-4 text-muted-foreground">{icon}</div>}
       <h3 className="text-lg font-semibold">{title}</h3>
       {description && <p className="mt-2 max-w-sm text-sm text-muted-foreground">{description}</p>}

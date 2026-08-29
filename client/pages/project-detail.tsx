@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { PublicLayout } from '../components/layout'
+import { PublicLayout, HexCta } from '../components/layout'
 import { Badge, Button, FullPageLoading, EmptyState } from '../components/ui'
 import { ProjectCard } from '../components/cards'
 import { Link } from '../components/link'
@@ -15,14 +15,18 @@ type DetailResponse = { project: Project; related: Project[] }
 
 function Section({ icon: Icon, title, children }: { icon: typeof Target; title: string; children: React.ReactNode }) {
   return (
-    <section className="rounded-lg border border-border bg-card p-6">
-      <div className="mb-3 flex items-center gap-2.5">
-        <span className="flex h-8 w-8 items-center justify-center rounded-md bg-gold/10">
+    <section className="glass relative overflow-hidden rounded-2xl p-6">
+      <span
+        className="hex-clip-v absolute -right-6 -top-6 h-20 w-20 opacity-10"
+        style={{ background: 'var(--gradient-accent)' }}
+      />
+      <div className="relative mb-3 flex items-center gap-2.5">
+        <span className="hex-clip-v flex h-8 w-8 items-center justify-center text-gold" style={{ background: 'color-mix(in oklab, var(--brand-accent) 18%, transparent)' }}>
           <Icon className="h-4 w-4 text-gold" />
         </span>
         <h2 className="font-heading text-lg font-semibold">{title}</h2>
       </div>
-      {children}
+      <div className="relative">{children}</div>
     </section>
   )
 }
@@ -61,8 +65,9 @@ export default function ProjectDetailPage({ slug }: { slug: string }) {
   return (
     <PublicLayout>
       {/* Header */}
-      <section className="border-b border-border bg-card/40">
-        <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
+      <section className="relative overflow-hidden">
+        <div className="grid-bg pointer-events-none absolute inset-0 opacity-40" />
+        <div className="relative mx-auto max-w-7xl px-4 pb-14 pt-28 sm:px-6 lg:px-8">
           <Link href="/projects" className="mb-8 inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground">
             <ArrowLeft className="h-4 w-4" />
             All projects
@@ -77,7 +82,7 @@ export default function ProjectDetailPage({ slug }: { slug: string }) {
 
           <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {p.company_name && (
-              <div className="flex items-center gap-3 rounded-md border border-border bg-background/60 px-4 py-3">
+              <div className="glass flex items-center gap-3 px-4 py-3">
                 <Building2 className="h-5 w-5 shrink-0 text-gold" />
                 <div>
                   <p className="text-xs text-muted-foreground">Client</p>
@@ -86,7 +91,7 @@ export default function ProjectDetailPage({ slug }: { slug: string }) {
               </div>
             )}
             {p.industry && (
-              <div className="flex items-center gap-3 rounded-md border border-border bg-background/60 px-4 py-3">
+              <div className="glass flex items-center gap-3 px-4 py-3">
                 <Briefcase className="h-5 w-5 shrink-0 text-gold" />
                 <div>
                   <p className="text-xs text-muted-foreground">Industry</p>
@@ -95,7 +100,7 @@ export default function ProjectDetailPage({ slug }: { slug: string }) {
               </div>
             )}
             {p.duration && (
-              <div className="flex items-center gap-3 rounded-md border border-border bg-background/60 px-4 py-3">
+              <div className="glass flex items-center gap-3 px-4 py-3">
                 <Clock className="h-5 w-5 shrink-0 text-gold" />
                 <div>
                   <p className="text-xs text-muted-foreground">Duration</p>
@@ -104,7 +109,7 @@ export default function ProjectDetailPage({ slug }: { slug: string }) {
               </div>
             )}
             {p.start_date && (
-              <div className="flex items-center gap-3 rounded-md border border-border bg-background/60 px-4 py-3">
+              <div className="glass flex items-center gap-3 px-4 py-3">
                 <Calendar className="h-5 w-5 shrink-0 text-gold" />
                 <div>
                   <p className="text-xs text-muted-foreground">Timeline</p>
@@ -209,7 +214,7 @@ export default function ProjectDetailPage({ slug }: { slug: string }) {
           {/* Sidebar */}
           <aside className="space-y-6 lg:sticky lg:top-24 lg:self-start">
             {p.technologies.length > 0 && (
-              <div className="rounded-lg border border-border bg-card p-6">
+              <div className="glass rounded-2xl p-6">
                 <h3 className="mb-4 font-mono text-xs font-semibold uppercase tracking-[0.18em] text-gold">Technologies</h3>
                 <div className="flex flex-wrap gap-2">
                   {p.technologies.map((t) => (
@@ -221,7 +226,7 @@ export default function ProjectDetailPage({ slug }: { slug: string }) {
               </div>
             )}
             {p.tags.length > 0 && (
-              <div className="rounded-lg border border-border bg-card p-6">
+              <div className="glass rounded-2xl p-6">
                 <h3 className="mb-4 font-mono text-xs font-semibold uppercase tracking-[0.18em] text-gold">Tags</h3>
                 <div className="flex flex-wrap gap-2">
                   {p.tags.map((t) => (
@@ -232,15 +237,17 @@ export default function ProjectDetailPage({ slug }: { slug: string }) {
                 </div>
               </div>
             )}
-            <div className="rounded-lg border border-gold/30 bg-gold/5 p-6">
-              <h3 className="font-heading text-lg font-semibold">Need something similar?</h3>
-              <p className="mt-2 text-sm text-muted-foreground">Tell us about your project — we'll reply within 24 hours.</p>
-              <Link href="/contact">
-                <Button variant="gold" className="mt-4 w-full">
-                  Start a Project
-                  <ArrowRight className="h-4 w-4" />
-                </Button>
-              </Link>
+            <div className="glass-strong relative overflow-hidden rounded-2xl p-6">
+              <span
+                className="hex-clip-v absolute -right-8 -top-8 h-24 w-24 opacity-15"
+                style={{ background: 'var(--gradient-accent)' }}
+              />
+              <h3 className="relative font-heading text-lg font-semibold">Need something similar?</h3>
+              <p className="relative mt-2 text-sm text-muted-foreground">Tell us about your project — we'll reply within 24 hours.</p>
+              <HexCta href="/contact" className="relative mt-4 w-full">
+                Start a Project
+                <ArrowRight className="h-4 w-4" />
+              </HexCta>
             </div>
           </aside>
         </div>

@@ -1,17 +1,15 @@
-import { PublicLayout } from '../components/layout'
+import { PublicLayout, PageHero } from '../components/layout'
 import { usePageMeta } from '../lib/hooks'
 import { useSite } from '../lib/site'
 
 function LegalLayout({ eyebrow, title, children }: { eyebrow: string; title: string; children: React.ReactNode }) {
   return (
     <PublicLayout>
-      <section className="border-b border-border bg-card/40 py-14">
-        <div className="mx-auto max-w-3xl px-4 sm:px-6">
-          <p className="mb-3 font-mono text-xs font-medium uppercase tracking-[0.2em] text-gold">{eyebrow}</p>
-          <h1 className="text-3xl font-bold tracking-tight md:text-4xl">{title}</h1>
-          <p className="mt-3 text-sm text-muted-foreground">Last updated: August 2026</p>
-        </div>
-      </section>
+      <PageHero
+        eyebrow={eyebrow}
+        title={title}
+        description={<p className="text-sm">Last updated: August 2026</p>}
+      />
       <section className="py-14">
         <div className="prose-hexo mx-auto max-w-3xl space-y-8 px-4 sm:px-6">{children}</div>
       </section>

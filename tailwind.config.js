@@ -42,10 +42,14 @@ export default {
           DEFAULT: 'hsl(var(--gold))',
           foreground: 'hsl(var(--gold-foreground))',
         },
+        'brand-dark': 'var(--brand-dark)',
+        'brand-light': 'var(--brand-light)',
       },
       fontFamily: {
         heading: ['var(--font-heading)'],
+        display: ['var(--font-heading)'],
         body: ['var(--font-body)'],
+        sans: ['var(--font-body)'],
         mono: ['var(--font-mono)'],
       },
       borderRadius: {

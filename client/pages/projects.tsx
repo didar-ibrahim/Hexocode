@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { PublicLayout } from '../components/layout'
+import { PublicLayout, PageHero } from '../components/layout'
 import { Input, Select, Pagination, FullPageLoading, ErrorState, EmptyState, Skeleton, Card } from '../components/ui'
 import { ProjectCard } from '../components/cards'
 import { useApi, useDebounced, usePageMeta } from '../lib/hooks'
@@ -40,15 +40,11 @@ export default function ProjectsPage() {
 
   return (
     <PublicLayout>
-      <section className="border-b border-border bg-card/40 py-16">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <p className="mb-3 font-mono text-xs font-medium uppercase tracking-[0.2em] text-gold">Our work</p>
-          <h1 className="text-balance text-4xl font-bold tracking-tight md:text-5xl">Projects</h1>
-          <p className="mt-4 max-w-2xl text-muted-foreground">
-            A selection of systems we've designed, built and shipped. Filter by category or technology to find work similar to what you have in mind.
-          </p>
-        </div>
-      </section>
+      <PageHero
+        eyebrow="Our work"
+        title="Projects"
+        description="A selection of systems we've designed, built and shipped. Filter by category or technology to find work similar to what you have in mind."
+      />
 
       <section className="py-14">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">

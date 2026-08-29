@@ -1,4 +1,4 @@
-import { PublicLayout } from '../components/layout'
+import { PublicLayout, PageHero } from '../components/layout'
 import { SectionHeading, Badge, Button, FullPageLoading, ErrorState, EmptyState } from '../components/ui'
 import { ServiceIcon } from '../components/cards'
 import { Link } from '../components/link'
@@ -13,15 +13,11 @@ export default function ServicesPage() {
 
   return (
     <PublicLayout>
-      <section className="border-b border-border bg-card/40 py-16">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <p className="mb-3 font-mono text-xs font-medium uppercase tracking-[0.2em] text-gold">What we do</p>
-          <h1 className="text-balance text-4xl font-bold tracking-tight md:text-5xl">Services</h1>
-          <p className="mt-4 max-w-2xl text-muted-foreground">
-            Every service below is delivered directly by the two of us — designed, built and supported without handoffs.
-          </p>
-        </div>
-      </section>
+      <PageHero
+        eyebrow="What we do"
+        title="Services"
+        description="Every service below is delivered directly by the two of us — designed, built and supported without handoffs."
+      />
 
       <section className="py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -37,12 +33,12 @@ export default function ServicesPage() {
                 <article
                   key={s.id}
                   id={s.slug}
-                  className="scroll-mt-24 rounded-xl border border-border bg-card p-8 transition-colors hover:border-gold/30 md:p-10"
+                  className="glass group relative scroll-mt-24 overflow-hidden rounded-2xl p-8 transition-transform duration-500 hover:-translate-y-2 md:p-10"
                 >
                   <div className="grid gap-8 lg:grid-cols-[1fr_320px]">
                     <div>
                       <div className="flex items-center gap-4">
-                        <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-gold/10 text-gold">
+                        <span className="hex-clip-v flex h-12 w-12 shrink-0 items-center justify-center text-gold" style={{ background: 'color-mix(in oklab, var(--brand-accent) 18%, transparent)' }}>
                           <ServiceIcon icon={s.icon} />
                         </span>
                         <div>
@@ -62,7 +58,7 @@ export default function ServicesPage() {
                       )}
                     </div>
                     {s.features.length > 0 && (
-                      <div className="rounded-lg border border-border bg-background/60 p-6">
+                      <div className="glass rounded-2xl p-6">
                         <h3 className="mb-4 font-mono text-xs font-semibold uppercase tracking-[0.18em] text-gold">What's included</h3>
                         <ul className="space-y-2.5">
                           {s.features.map((f, fi) => (
@@ -89,7 +85,11 @@ export default function ServicesPage() {
           )}
 
           <div ref={ctaRef} className="mt-16">
-            <div className="rounded-xl border border-gold/30 bg-gold/5 p-8 text-center md:p-12">
+            <div className="glass-strong relative overflow-hidden rounded-[2rem] px-8 py-12 text-center md:p-12">
+              <span
+                className="hex-clip-v absolute -left-12 -top-12 h-40 w-40 opacity-15"
+                style={{ background: 'var(--gradient-brand)' }}
+              />
               <SectionHeading title="Not sure which service fits?" description="Describe what you're trying to achieve — we'll recommend the simplest approach that gets you there." />
               <Link href="/contact">
                 <Button variant="gold" size="lg">

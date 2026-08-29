@@ -3,37 +3,55 @@
 @tailwind utilities;
 
 /* ---------------------------------------------------------------------------
-   Hexocode design tokens — change the brand here, everywhere updates.
+   Hexocode design tokens — deep greens as identity, gold as sparing accent.
    Brand: primary #173D2D · secondary #285B43 · gold #B7A35A
           dark bg #0A2017 · light bg #EFF4F0
 --------------------------------------------------------------------------- */
 :root {
-  --font-heading: 'Space Grotesk', 'Inter', system-ui, sans-serif;
-  --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-heading: 'Chakra Petch', ui-sans-serif, system-ui, sans-serif;
+  --font-body: 'Sora', ui-sans-serif, system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
 
-  --background: 141 33% 96%;
-  --foreground: 148 52% 9%;
-  --card: 0 0% 100%;
-  --card-foreground: 148 52% 9%;
-  --popover: 0 0% 100%;
-  --popover-foreground: 148 52% 9%;
+  --background: 140 25% 95%;
+  --foreground: 148 45% 16%;
+  --card: 140 30% 99%;
+  --card-foreground: 148 45% 16%;
+  --popover: 140 30% 99%;
+  --popover-foreground: 148 45% 16%;
   --primary: 149 45% 16%;
   --primary-foreground: 120 20% 96%;
   --secondary: 147 39% 26%;
   --secondary-foreground: 120 20% 96%;
   --muted: 140 16% 90%;
   --muted-foreground: 150 12% 38%;
-  --accent: 147 39% 26%;
-  --accent-foreground: 120 20% 96%;
+  --accent: 46 38% 53%;
+  --accent-foreground: 148 52% 9%;
   --gold: 46 38% 53%;
   --gold-foreground: 148 52% 9%;
   --destructive: 0 62% 45%;
   --destructive-foreground: 0 0% 98%;
   --border: 144 15% 84%;
   --input: 144 15% 80%;
-  --ring: 46 38% 53%;
-  --radius: 0.625rem;
+  --ring: 147 39% 26%;
+  --radius: 0.75rem;
+
+  --brand-primary: #173d2d;
+  --brand-primary-2: #285b43;
+  --brand-accent: #b7a35a;
+  --brand-dark: #0a2017;
+  --brand-light: #eff4f0;
+
+  --glass-bg: color-mix(in oklab, var(--brand-light) 55%, transparent);
+  --glass-border: color-mix(in oklab, var(--brand-primary) 18%, transparent);
+  --glass-blur: 22px;
+  --grid-line: color-mix(in oklab, var(--brand-primary) 12%, transparent);
+  --gradient-brand: linear-gradient(135deg, var(--brand-primary), var(--brand-primary-2));
+  --gradient-accent: linear-gradient(
+    100deg,
+    color-mix(in oklab, var(--brand-accent) 55%, white),
+    var(--brand-accent),
+    color-mix(in oklab, var(--brand-accent) 70%, black)
+  );
 }
 
 .dark {
@@ -43,14 +61,14 @@
   --card-foreground: 120 18% 94%;
   --popover: 150 44% 11%;
   --popover-foreground: 120 18% 94%;
-  --primary: 120 20% 94%;
-  --primary-foreground: 149 45% 14%;
-  --secondary: 149 34% 20%;
+  --primary: 147 39% 26%;
+  --primary-foreground: 120 20% 96%;
+  --secondary: 149 45% 16%;
   --secondary-foreground: 120 18% 94%;
   --muted: 150 30% 16%;
   --muted-foreground: 120 10% 62%;
-  --accent: 149 39% 26%;
-  --accent-foreground: 120 20% 94%;
+  --accent: 46 38% 53%;
+  --accent-foreground: 148 52% 9%;
   --gold: 46 38% 53%;
   --gold-foreground: 148 52% 9%;
   --destructive: 0 55% 42%;
@@ -58,6 +76,10 @@
   --border: 150 26% 19%;
   --input: 150 26% 24%;
   --ring: 46 38% 53%;
+
+  --glass-bg: color-mix(in oklab, var(--brand-primary) 30%, transparent);
+  --glass-border: color-mix(in oklab, var(--brand-light) 14%, transparent);
+  --grid-line: color-mix(in oklab, var(--brand-light) 8%, transparent);
 }
 
 @layer base {
@@ -69,12 +91,19 @@
   }
   body {
     @apply bg-background text-foreground font-body antialiased;
+    transition:
+      background-color 0.6s ease,
+      color 0.6s ease;
   }
-  h1, h2, h3, h4 {
+  h1,
+  h2,
+  h3,
+  h4 {
     @apply font-heading;
   }
   ::selection {
-    background: hsl(var(--gold) / 0.35);
+    background: color-mix(in oklab, var(--brand-accent) 45%, transparent);
+    color: hsl(var(--foreground));
   }
   :focus-visible {
     outline: 2px solid hsl(var(--ring));
@@ -94,20 +123,156 @@
 }
 
 @layer components {
-  /* Brand surface pattern: fine dot grid used in hero / CTA bands */
   .surface-grid {
-    background-image: radial-gradient(hsl(var(--gold) / 0.14) 1px, transparent 1px);
-    background-size: 26px 26px;
+    background-image:
+      linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+    background-size: 64px 64px;
   }
   .surface-grid-soft {
-    background-image: radial-gradient(hsl(var(--foreground) / 0.05) 1px, transparent 1px);
-    background-size: 26px 26px;
+    background-image:
+      linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+    background-size: 64px 64px;
   }
   .text-balance {
     text-wrap: balance;
   }
   .prose-hexo p {
     @apply mb-4 leading-relaxed text-muted-foreground;
+  }
+}
+
+@layer utilities {
+  .glass {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(var(--glass-blur)) saturate(160%);
+    box-shadow:
+      inset 0 1px 0 color-mix(in oklab, white 22%, transparent),
+      0 24px 60px -40px color-mix(in oklab, var(--brand-dark) 80%, transparent);
+  }
+  .glass-strong {
+    background: color-mix(in oklab, var(--glass-bg) 80%, hsl(var(--background)));
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(calc(var(--glass-blur) * 1.6)) saturate(180%);
+    box-shadow:
+      inset 0 1px 0 color-mix(in oklab, white 26%, transparent),
+      inset 0 -1px 0 color-mix(in oklab, var(--brand-accent) 12%, transparent),
+      0 40px 90px -50px color-mix(in oklab, var(--brand-dark) 90%, transparent);
+  }
+  .hex-clip {
+    clip-path: polygon(25% 3%, 75% 3%, 100% 50%, 75% 97%, 25% 97%, 0% 50%);
+  }
+  .hex-clip-v {
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  }
+  .text-accent-metal {
+    background: var(--gradient-accent);
+    background-clip: text;
+    color: transparent;
+  }
+  .grid-bg {
+    background-image:
+      linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+      linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+    background-size: 64px 64px;
+  }
+  .accent-rule {
+    height: 1px;
+    background: linear-gradient(
+      to right,
+      transparent,
+      color-mix(in oklab, var(--brand-accent) 70%, transparent),
+      transparent
+    );
+  }
+  .anim-float {
+    animation: hex-float 9s ease-in-out infinite;
+  }
+  .anim-spin-slow {
+    animation: hex-spin 26s linear infinite;
+  }
+  .anim-rise {
+    animation: rise-in 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .anim-marquee {
+    animation: marquee 34s linear infinite;
+  }
+}
+
+@keyframes hex-float {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+  50% {
+    transform: translate3d(0, -18px, 0) rotate(3deg);
+  }
+}
+@keyframes hex-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes sheen {
+  0% {
+    transform: translateX(-120%) skewX(-18deg);
+  }
+  100% {
+    transform: translateX(220%) skewX(-18deg);
+  }
+}
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes pulse-ring {
+  0% {
+    opacity: 0.6;
+    transform: scale(0.85);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.5);
+  }
+}
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+@keyframes shard-in {
+  from {
+    opacity: 0;
+    transform: translate3d(var(--sx, 0), var(--sy, 0), 0) scale(0.4) rotate(var(--sr, 0deg));
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1) rotate(0deg);
+  }
+}
+@keyframes splash-out {
+  to {
+    opacity: 0;
+    clip-path: polygon(50% 50%, 50% 50%, 50% 50%, 50% 50%, 50% 50%, 50% 50%);
+  }
+}
+@keyframes scan {
+  0% {
+    top: -10%;
+  }
+  100% {
+    top: 110%;
   }
 }
 

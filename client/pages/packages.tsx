@@ -1,7 +1,6 @@
-import { PublicLayout } from '../components/layout'
+import { PublicLayout, PageHero, HexCta } from '../components/layout'
 import { PackageCard } from '../components/cards'
-import { FullPageLoading, ErrorState, EmptyState, Button } from '../components/ui'
-import { Link } from '../components/link'
+import { FullPageLoading, ErrorState, EmptyState } from '../components/ui'
 import { useApi, usePageMeta, useReveal } from '../lib/hooks'
 import { api, Package } from '../lib/api'
 import { PackageOpen, ArrowRight, MessageSquare, Clock, ShieldCheck } from 'lucide-react'
@@ -19,15 +18,12 @@ export default function PackagesPage() {
 
   return (
     <PublicLayout>
-      <section className="border-b border-border bg-card/40 py-16">
-        <div className="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
-          <p className="mb-3 font-mono text-xs font-medium uppercase tracking-[0.2em] text-gold">Pricing</p>
-          <h1 className="text-balance text-4xl font-bold tracking-tight md:text-5xl">Packages built for real budgets</h1>
-          <p className="mx-auto mt-4 max-w-2xl text-muted-foreground">
-            Straightforward packages for common needs — and custom quotes for everything else. No hidden fees, no agency markup.
-          </p>
-        </div>
-      </section>
+      <PageHero
+        align="center"
+        eyebrow="Pricing"
+        title="Packages built for real budgets"
+        description="Straightforward packages for common needs — and custom quotes for everything else. No hidden fees, no agency markup."
+      />
 
       <section className="py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -48,7 +44,11 @@ export default function PackagesPage() {
           <div ref={notesRef} className="mt-20">
             <div className="grid gap-8 md:grid-cols-3">
               {NOTES.map(({ Icon, title, text }) => (
-                <div key={title} className="rounded-lg border border-border bg-card p-6">
+                <div key={title} className="glass group relative h-full overflow-hidden rounded-2xl p-6">
+                  <span
+                    className="hex-clip-v absolute -right-6 -top-6 h-20 w-20 opacity-10"
+                    style={{ background: 'var(--gradient-accent)' }}
+                  />
                   <Icon className="mb-4 h-6 w-6 text-gold" />
                   <h3 className="font-heading text-lg font-semibold">{title}</h3>
                   <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{text}</p>
@@ -57,19 +57,21 @@ export default function PackagesPage() {
             </div>
           </div>
 
-          <div className="mt-16 rounded-xl border border-border bg-card p-8 text-center md:p-12">
-            <h2 className="text-balance font-heading text-2xl font-bold md:text-3xl">
-              Doesn't fit a package? <span className="text-gold">That's normal.</span>
+          <div className="glass-strong relative mt-16 overflow-hidden rounded-[2rem] px-8 py-12 text-center md:p-12">
+            <span
+              className="hex-clip-v absolute -left-12 -top-12 h-40 w-40 opacity-15"
+              style={{ background: 'var(--gradient-brand)' }}
+            />
+            <h2 className="relative text-balance font-heading text-2xl font-bold md:text-3xl">
+              Doesn't fit a package? <span className="text-accent-metal">That's normal.</span>
             </h2>
-            <p className="mx-auto mt-3 max-w-xl text-muted-foreground">
+            <p className="relative mx-auto mt-3 max-w-xl text-muted-foreground">
               Most interesting projects don't fit in a box. Tell us what you need and we'll scope it together — free, no obligation.
             </p>
-            <Link href="/contact?package=custom">
-              <Button variant="gold" size="lg" className="mt-6">
-                Request a Custom Quote
-                <ArrowRight className="h-5 w-5" />
-              </Button>
-            </Link>
+            <HexCta href="/contact?package=custom" className="relative mt-6">
+              Request a Custom Quote
+              <ArrowRight className="h-4 w-4" />
+            </HexCta>
           </div>
         </div>
       </section>

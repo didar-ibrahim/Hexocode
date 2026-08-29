@@ -3,6 +3,7 @@ import { useAuth } from '../../lib/auth'
 import { navigate, usePath } from '../../lib/router'
 import { Button, Input, Field } from '../../components/ui'
 import { Logo } from '../../components/brand'
+import { HexField } from '../../components/HexField'
 import { usePageMeta } from '../../lib/hooks'
 import { Lock, LogIn } from 'lucide-react'
 
@@ -33,14 +34,26 @@ export default function AdminLoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4">
-      <div className="w-full max-w-sm animate-fade-up">
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden px-4">
+      <HexField className="absolute inset-0 h-full w-full" />
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background:
+            'radial-gradient(60% 55% at 50% 40%, color-mix(in oklab, var(--brand-primary-2) 22%, transparent), transparent 70%)',
+        }}
+      />
+      <div className="relative w-full max-w-sm animate-fade-up">
         <div className="mb-8 flex justify-center">
           <Logo size="lg" />
         </div>
-        <div className="rounded-xl border border-border bg-card p-8">
-          <div className="mb-6 flex items-center gap-3">
-            <span className="flex h-10 w-10 items-center justify-center rounded-lg bg-gold/10">
+        <div className="glass-strong relative overflow-hidden rounded-2xl p-8">
+          <span
+            className="hex-clip-v absolute -right-8 -top-8 h-28 w-28 opacity-15"
+            style={{ background: 'var(--gradient-accent)' }}
+          />
+          <div className="relative mb-6 flex items-center gap-3">
+            <span className="hex-clip-v flex h-10 w-10 items-center justify-center text-gold" style={{ background: 'color-mix(in oklab, var(--brand-accent) 18%, transparent)' }}>
               <Lock className="h-5 w-5 text-gold" />
             </span>
             <div>
@@ -50,7 +63,7 @@ export default function AdminLoginPage() {
               </p>
             </div>
           </div>
-          <form onSubmit={submit} className="space-y-4">
+          <form onSubmit={submit} className="relative space-y-4">
             <Field label="Email" required>
                 <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@hexocode.dev" autoComplete="email" required />
             </Field>

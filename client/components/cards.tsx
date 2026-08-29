@@ -68,7 +68,7 @@ export function ProjectCard({ project, large }: { project: Project; large?: bool
 export function ServiceCard({ service }: { service: Service }) {
   return (
     <Card hover className="flex h-full flex-col p-6">
-      <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-lg bg-gold/10 text-gold">
+      <div className="mb-4 inline-flex h-12 w-12 items-center justify-center hex-clip-v text-gold" style={{ background: 'color-mix(in oklab, var(--brand-accent) 18%, transparent)' }}>
         <ServiceIcon icon={service.icon} />
       </div>
       <h3 className="font-heading text-lg font-semibold">{service.name}</h3>
@@ -120,9 +120,12 @@ export function PackageCard({ pkg }: { pkg: Package }) {
       <Link href={`/contact?package=${pkg.slug}`} className="mt-8">
         <span
           className={cn(
-            'inline-flex h-10 w-full items-center justify-center rounded-md text-sm font-medium transition-all',
-            pkg.featured === 1 ? 'bg-gold text-gold-foreground hover:brightness-110' : 'border border-border hover:bg-accent/15'
+            'inline-flex h-10 w-full items-center justify-center font-mono text-[11px] uppercase tracking-[0.18em] transition-all',
+            pkg.featured === 1
+              ? 'hex-clip text-primary-foreground hover:scale-[1.03]'
+              : 'glass rounded-full hover:scale-[1.03]'
           )}
+          style={pkg.featured === 1 ? { background: 'var(--gradient-brand)' } : undefined}
         >
           {pkg.cta_text || 'Start a Project'}
         </span>

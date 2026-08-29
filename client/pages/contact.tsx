@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { PublicLayout } from '../components/layout'
+import { PublicLayout, PageHero } from '../components/layout'
 import { Input, Textarea, Select, Button, Field } from '../components/ui'
 import { SocialLinks } from '../components/social'
 import { usePageMeta } from '../lib/hooks'
@@ -49,22 +49,18 @@ export default function ContactPage() {
 
   return (
     <PublicLayout>
-      <section className="border-b border-border bg-card/40 py-16">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <p className="mb-3 font-mono text-xs font-medium uppercase tracking-[0.2em] text-gold">Contact</p>
-          <h1 className="text-balance text-4xl font-bold tracking-tight md:text-5xl">Let's talk about your project</h1>
-          <p className="mt-4 max-w-2xl text-muted-foreground">
-            Tell us what you're building. We reply within 24 hours — usually much faster.
-          </p>
-        </div>
-      </section>
+      <PageHero
+        eyebrow="Contact"
+        title="Let's talk about your project"
+        description="Tell us what you're building. We reply within 24 hours — usually much faster."
+      />
 
       <section className="py-16">
         <div className="mx-auto grid max-w-7xl gap-12 px-4 sm:px-6 lg:grid-cols-[1fr_380px] lg:px-8">
           {/* Form */}
           <div>
             {done ? (
-              <div className="rounded-xl border border-gold/40 bg-gold/5 p-10 text-center animate-fade-up">
+              <div className="glass-strong rounded-2xl p-10 text-center animate-fade-up">
                 <CheckCircle2 className="mx-auto mb-4 h-12 w-12 text-gold" />
                 <h2 className="font-heading text-2xl font-bold">Message received</h2>
                 <p className="mx-auto mt-3 max-w-md text-muted-foreground">
@@ -133,7 +129,7 @@ export default function ContactPage() {
 
           {/* Info sidebar */}
           <aside className="space-y-6 lg:sticky lg:top-24 lg:self-start">
-            <div className="rounded-xl border border-border bg-card p-7">
+            <div className="glass rounded-2xl p-7">
               <h2 className="mb-5 font-heading text-lg font-semibold">Other ways to reach us</h2>
               <ul className="space-y-4 text-sm">
                 {site.email && (
@@ -172,12 +168,16 @@ export default function ContactPage() {
               </ul>
               <SocialLinks links={site.social_links} className="mt-6 border-t border-border pt-5" />
             </div>
-            <div className="rounded-xl border border-border bg-card p-7">
-              <h3 className="font-heading font-semibold">What happens next?</h3>
+            <div className="glass-strong relative overflow-hidden rounded-2xl p-7">
+              <span
+                className="hex-clip-v absolute -right-8 -top-8 h-28 w-28 opacity-15"
+                style={{ background: 'var(--gradient-accent)' }}
+              />
+              <h3 className="relative font-heading font-semibold">What happens next?</h3>
               <ol className="mt-4 space-y-3 text-sm text-muted-foreground">
                 {['We read your message and reply within 24 hours', 'A short call to understand your goals', 'A written proposal with scope, timeline and fixed price', 'You decide — no pressure, no obligation'].map((s, i) => (
                   <li key={i} className="flex gap-3">
-                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-gold/15 font-mono text-xs font-semibold text-gold">{i + 1}</span>
+                    <span className="hex-clip-v flex h-6 w-6 shrink-0 items-center justify-center font-mono text-xs font-semibold text-accent-foreground" style={{ background: 'var(--gradient-accent)' }}>{i + 1}</span>
                     {s}
                   </li>
                 ))}

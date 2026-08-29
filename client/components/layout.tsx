@@ -1,8 +1,9 @@
 import React, { useEffect, useState, ReactNode } from 'react'
 import { Link } from './link'
 import { BrandMark, Logo } from './brand'
-import { Button } from './ui'
 import { SocialLinks } from './social'
+import { HexField } from './HexField'
+import { Splash } from './Splash'
 import { useSite } from '../lib/site'
 import { useTheme } from '../lib/hooks'
 import { usePath, navigate } from '../lib/router'
@@ -24,9 +25,56 @@ function ThemeToggle() {
     <button
       onClick={toggle}
       aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
-      className="rounded-md p-2 text-muted-foreground transition-colors hover:bg-accent/15 hover:text-foreground"
+      className="glass hex-clip-v group relative grid h-11 w-10 place-items-center transition-transform duration-300 hover:scale-110"
     >
-      {theme === 'dark' ? <Sun className="h-4.5 w-4.5 h-5 w-5" /> : <Moon className="h-5 w-5" />}
+      <span
+        className="absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+        style={{ background: 'var(--gradient-accent)' }}
+      />
+      {theme === 'dark' ? (
+        <Sun className="relative h-4 w-4 text-gold" />
+      ) : (
+        <Moon className="relative h-4 w-4 text-primary" />
+      )}
+    </button>
+  )
+}
+
+function HexCta({
+  children,
+  onClick,
+  className,
+  href,
+}: {
+  children: ReactNode
+  onClick?: () => void
+  className?: string
+  href?: string
+}) {
+  const cls = cn(
+    'hex-clip relative inline-flex overflow-hidden px-7 py-3 font-mono text-[11px] uppercase tracking-[0.2em] text-primary-foreground transition-transform hover:scale-[1.03]',
+    className
+  )
+  const style = { background: 'var(--gradient-brand)' } as const
+  const inner = (
+    <>
+      <span className="relative z-10 inline-flex items-center gap-2">{children}</span>
+      <span
+        className="absolute inset-y-0 -left-1/3 w-1/3 opacity-40"
+        style={{ background: 'var(--gradient-accent)', animation: 'sheen 3.4s ease-in-out infinite' }}
+      />
+    </>
+  )
+  if (href) {
+    return (
+      <Link href={href} className={cls} style={style}>
+        {inner}
+      </Link>
+    )
+  }
+  return (
+    <button type="button" onClick={onClick} className={cls} style={style}>
+      {inner}
     </button>
   )
 }
@@ -37,7 +85,8 @@ export function Navbar() {
   const [scrolled, setScrolled] = useState(false)
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 8)
+    const onScroll = () => setScrolled(window.scrollY > 24)
+    onScroll()
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
@@ -45,73 +94,76 @@ export function Navbar() {
   useEffect(() => setOpen(false), [path])
 
   return (
-    <header
-      className={cn(
-        'sticky top-0 z-40 w-full border-b transition-colors',
-        scrolled ? 'border-border bg-background/90 backdrop-blur-md' : 'border-transparent bg-transparent'
-      )}
-    >
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+    <header className="fixed inset-x-0 top-0 z-50 flex justify-center px-4 pt-4">
+      <nav
+        className={cn(
+          'flex w-full max-w-6xl items-center gap-4 rounded-2xl px-4 py-2.5 transition-all duration-500',
+          scrolled || open ? 'glass-strong' : 'border border-transparent'
+        )}
+      >
         <BrandMark />
-        <nav className="hidden items-center gap-1 md:flex" aria-label="Main navigation">
+        <ul className="ml-auto hidden items-center gap-1 md:flex" aria-label="Main navigation">
           {NAV.map((item) => {
             const active = item.href === '/' ? path === '/' : path.startsWith(item.href)
             return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={cn(
-                  'rounded-md px-3 py-2 text-sm font-medium transition-colors',
-                  active ? 'text-gold' : 'text-muted-foreground hover:bg-accent/15 hover:text-foreground'
-                )}
-                aria-current={active ? 'page' : undefined}
-              >
-                {item.label}
-              </Link>
+              <li key={item.href}>
+                <Link
+                  href={item.href}
+                  className={cn(
+                    'relative block px-4 py-2 font-mono text-[11px] uppercase tracking-[0.22em] transition-colors',
+                    active ? 'text-foreground' : 'text-muted-foreground hover:text-foreground'
+                  )}
+                  aria-current={active ? 'page' : undefined}
+                >
+                  {item.label}
+                </Link>
+              </li>
             )
           })}
-        </nav>
+        </ul>
         <div className="hidden items-center gap-2 md:flex">
-          <ThemeToggle />
-          <Button variant="gold" size="sm" onClick={() => navigate('/contact')}>
+          <HexCta onClick={() => navigate('/contact')}>
             Start a Project
-            <ArrowRight className="h-4 w-4" />
-          </Button>
+            <ArrowRight className="h-3.5 w-3.5" />
+          </HexCta>
+          <ThemeToggle />
         </div>
-        <div className="flex items-center gap-1 md:hidden">
+        <div className="ml-auto flex items-center gap-1 md:hidden">
           <ThemeToggle />
           <button
             onClick={() => setOpen(!open)}
             aria-label={open ? 'Close menu' : 'Open menu'}
             aria-expanded={open}
-            className="rounded-md p-2 hover:bg-accent/15"
+            className="glass rounded-md p-2"
           >
             {open ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </button>
         </div>
-      </div>
+      </nav>
       {open && (
-        <nav className="border-t border-border bg-background px-4 pb-6 pt-2 md:hidden animate-fade-in" aria-label="Mobile navigation">
-          {NAV.map((item) => {
-            const active = item.href === '/' ? path === '/' : path.startsWith(item.href)
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={cn(
-                  'block rounded-md px-3 py-3 text-base font-medium',
-                  active ? 'text-gold' : 'text-foreground hover:bg-accent/15'
-                )}
-              >
-                {item.label}
-              </Link>
-            )
-          })}
-          <Button variant="gold" className="mt-3 w-full" onClick={() => navigate('/contact')}>
-            Start a Project
-            <ArrowRight className="h-4 w-4" />
-          </Button>
-        </nav>
+        <div className="glass-strong absolute inset-x-4 top-[4.5rem] rounded-2xl px-4 pb-6 pt-2 md:hidden animate-fade-in">
+          <nav aria-label="Mobile navigation">
+            {NAV.map((item) => {
+              const active = item.href === '/' ? path === '/' : path.startsWith(item.href)
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={cn(
+                    'block rounded-md px-3 py-3 font-mono text-sm uppercase tracking-[0.18em]',
+                    active ? 'text-gold' : 'text-foreground hover:bg-accent/15'
+                  )}
+                >
+                  {item.label}
+                </Link>
+              )
+            })}
+            <HexCta className="mt-3 w-full" onClick={() => navigate('/contact')}>
+              Start a Project
+              <ArrowRight className="h-4 w-4" />
+            </HexCta>
+          </nav>
+        </div>
       )}
     </header>
   )
@@ -121,8 +173,9 @@ export function Footer() {
   const site = useSite()
   const year = new Date().getFullYear()
   return (
-    <footer className="border-t border-border bg-card">
-      <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
+    <footer className="relative overflow-hidden border-t">
+      <div className="grid-bg pointer-events-none absolute inset-0 opacity-40" />
+      <div className="relative mx-auto max-w-6xl px-4 py-14 sm:px-6 lg:px-8">
         <div className="grid gap-10 md:grid-cols-4">
           <div className="md:col-span-1">
             <Logo />
@@ -176,7 +229,8 @@ export function Footer() {
             </ul>
           </div>
         </div>
-        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-border pt-8 text-sm text-muted-foreground sm:flex-row">
+        <div className="accent-rule mt-12" />
+        <div className="mt-8 flex flex-col items-center justify-between gap-4 text-sm text-muted-foreground sm:flex-row">
           <p>
             © {year} {site.company_name}. All rights reserved.
           </p>
@@ -194,12 +248,83 @@ export function Footer() {
   )
 }
 
+export function PageHero({
+  eyebrow,
+  title,
+  description,
+  align = 'left',
+  children,
+}: {
+  eyebrow: string
+  title: string
+  description?: ReactNode
+  align?: 'left' | 'center'
+  children?: ReactNode
+}) {
+  return (
+    <section className="relative overflow-hidden pb-16 pt-28 md:pb-20 md:pt-32">
+      <HexField className="absolute inset-0 h-full w-full" />
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background:
+            'radial-gradient(60% 55% at 50% 40%, color-mix(in oklab, var(--brand-primary-2) 22%, transparent), transparent 70%)',
+        }}
+      />
+      <div className={cn('relative mx-auto max-w-6xl px-4 sm:px-6 lg:px-8', align === 'center' && 'text-center')}>
+        <p className="mb-3 font-mono text-[10px] font-medium uppercase tracking-[0.3em] text-gold">{eyebrow}</p>
+        <h1 className="text-balance font-heading text-4xl font-bold tracking-tight md:text-5xl">{title}</h1>
+        {description && (
+          <div
+            className={cn(
+              'mt-6 text-lg leading-relaxed text-muted-foreground',
+              align === 'center' ? 'mx-auto max-w-2xl' : 'max-w-3xl'
+            )}
+          >
+            {description}
+          </div>
+        )}
+        {children}
+      </div>
+    </section>
+  )
+}
+
 export function PublicLayout({ children }: { children: ReactNode }) {
+  const [splash, setSplash] = useState(() => {
+    try {
+      return sessionStorage.getItem('hexo-splash') !== '1'
+    } catch {
+      return true
+    }
+  })
+
+  useEffect(() => {
+    document.body.style.overflow = splash ? 'hidden' : ''
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [splash])
+
   return (
     <div className="flex min-h-screen flex-col">
+      {splash && (
+        <Splash
+          onDone={() => {
+            try {
+              sessionStorage.setItem('hexo-splash', '1')
+            } catch {
+              /* ignore */
+            }
+            setSplash(false)
+          }}
+        />
+      )}
       <Navbar />
       <main className="flex-1">{children}</main>
       <Footer />
     </div>
   )
 }
+
+export { HexCta }

@@ -30,7 +30,7 @@ export function SocialLinks({ links, className, iconClass }: { links: Record<str
             rel="noopener noreferrer"
             aria-label={label}
             className={cn(
-              'rounded-md p-2 text-muted-foreground transition-colors hover:bg-accent/15 hover:text-gold',
+              'rounded-md p-2 text-muted-foreground transition-colors hover:bg-accent/15 hover:text-gold glass',
               iconClass
             )}
           >

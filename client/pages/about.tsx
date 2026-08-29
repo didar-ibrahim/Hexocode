@@ -1,5 +1,5 @@
-import { PublicLayout } from '../components/layout'
-import { SectionHeading, FullPageLoading, Badge } from '../components/ui'
+import { PublicLayout, PageHero } from '../components/layout'
+import { SectionHeading, Badge } from '../components/ui'
 import { SocialLinks } from '../components/social'
 import { useApi, usePageMeta, useReveal } from '../lib/hooks'
 import { api, TeamMember } from '../lib/api'
@@ -32,24 +32,20 @@ export default function AboutPage() {
 
   return (
     <PublicLayout>
-      <section className="border-b border-border bg-card/40 py-16">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <p className="mb-3 font-mono text-xs font-medium uppercase tracking-[0.2em] text-gold">About us</p>
-          <h1 className="text-balance max-w-3xl text-4xl font-bold tracking-tight md:text-5xl">
-            Two developers who answer their own email.
-          </h1>
-          <p className="mt-6 max-w-3xl text-lg leading-relaxed text-muted-foreground">
-            {site.about_story ||
-              'Hexocode is a two-developer software studio. We design and build websites, web applications, mobile apps and custom business systems for clients who want a technical partner, not just a vendor.'}
-          </p>
-        </div>
-      </section>
+      <PageHero
+        eyebrow="About us"
+        title="Two developers who answer their own email."
+        description={
+          site.about_story ||
+          'Hexocode is a two-developer software studio. We design and build websites, web applications, mobile apps and custom business systems for clients who want a technical partner, not just a vendor.'
+        }
+      />
 
       {/* Mission / Vision */}
       <section className="py-20">
         <div className="mx-auto grid max-w-7xl gap-8 px-4 sm:px-6 md:grid-cols-2 lg:px-8">
           <Reveal>
-            <div className="h-full rounded-xl border border-border bg-card p-8">
+            <div className="glass h-full rounded-2xl p-8">
               <p className="mb-3 font-mono text-xs font-semibold uppercase tracking-[0.2em] text-gold">Mission</p>
               <p className="leading-relaxed text-foreground/90">
                 {site.mission || 'To give startups and growing businesses access to genuinely good software engineering — without agency overhead or opaque pricing.'}
@@ -57,7 +53,7 @@ export default function AboutPage() {
             </div>
           </Reveal>
           <Reveal delay={100}>
-            <div className="h-full rounded-xl border border-border bg-card p-8">
+            <div className="glass h-full rounded-2xl p-8">
               <p className="mb-3 font-mono text-xs font-semibold uppercase tracking-[0.2em] text-gold">Vision</p>
               <p className="leading-relaxed text-foreground/90">
                 {site.vision || 'A small studio known for work that lasts: products our clients still rely on years after launch.'}
@@ -68,16 +64,21 @@ export default function AboutPage() {
       </section>
 
       {/* Values */}
-      <section className="border-t border-border bg-card/40 py-20">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <section className="relative overflow-hidden py-20">
+        <div className="grid-bg absolute inset-0 opacity-40" />
+        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <Reveal>
             <SectionHeading eyebrow="How we work" title="Development philosophy" />
           </Reveal>
           <div className="grid gap-6 sm:grid-cols-2">
             {VALUES.map(({ Icon, title, text }, i) => (
               <Reveal key={title} delay={i * 80}>
-                <div className="flex h-full gap-5 rounded-xl border border-border bg-background/60 p-7">
-                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-gold/10">
+                <div className="glass group relative flex h-full gap-5 overflow-hidden rounded-2xl p-7">
+                  <span
+                    className="hex-clip-v absolute -right-6 -top-6 h-24 w-24 opacity-10 transition-opacity duration-500 group-hover:opacity-30"
+                    style={{ background: 'var(--gradient-accent)' }}
+                  />
+                  <span className="hex-clip-v flex h-11 w-11 shrink-0 items-center justify-center text-gold" style={{ background: 'color-mix(in oklab, var(--brand-accent) 18%, transparent)' }}>
                     <Icon className="h-5 w-5 text-gold" />
                   </span>
                   <div>
@@ -103,7 +104,7 @@ export default function AboutPage() {
             <div className="mx-auto grid max-w-4xl gap-8 md:grid-cols-2">
               {(data?.team ?? []).map((m, i) => (
                 <Reveal key={m.id} delay={i * 100}>
-                  <div className="h-full rounded-xl border border-border bg-card p-8 text-center transition-all hover:border-gold/30">
+                  <div className="glass h-full rounded-2xl p-8 text-center transition-transform duration-500 hover:-translate-y-2">
                     {m.avatar_url ? (
                       <img src={m.avatar_url} alt={m.name} className="mx-auto h-24 w-24 rounded-full object-cover" loading="lazy" />
                     ) : (
@@ -131,13 +132,14 @@ export default function AboutPage() {
       </section>
 
       {/* Stack */}
-      <section className="border-t border-border bg-card/40 py-20">
-        <div className="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
+      <section className="relative overflow-hidden py-20">
+        <div className="grid-bg absolute inset-0 opacity-40" />
+        <div className="relative mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
           <Reveal>
             <SectionHeading eyebrow="Toolbox" title="Technologies we work with" description="Proven, current tools — chosen per project, not per trend." />
             <div className="mx-auto flex max-w-3xl flex-wrap justify-center gap-2.5">
               {STACK.map((t) => (
-                <span key={t} className="rounded-md border border-border bg-background/70 px-4 py-2 font-mono text-sm text-muted-foreground transition-colors hover:border-gold/40 hover:text-foreground">
+                <span key={t} className="glass rounded-full px-4 py-2 font-mono text-sm text-muted-foreground transition-colors hover:text-foreground">
                   {t}
                 </span>
               ))}

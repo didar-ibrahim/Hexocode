@@ -44,8 +44,8 @@ export function AdminLayout({ children, title }: { children: ReactNode; title: s
             key={href}
             href={href}
             className={cn(
-              'flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-colors',
-              active ? 'bg-gold/15 text-gold' : 'text-muted-foreground hover:bg-accent/15 hover:text-foreground'
+              'flex items-center gap-3 rounded-xl px-3 py-2.5 font-mono text-[11px] font-medium uppercase tracking-[0.16em] transition-colors',
+              active ? 'glass-strong text-gold' : 'text-muted-foreground hover:bg-accent/15 hover:text-foreground'
             )}
             aria-current={active ? 'page' : undefined}
           >
@@ -58,9 +58,10 @@ export function AdminLayout({ children, title }: { children: ReactNode; title: s
   )
 
   return (
-    <div className="flex min-h-screen bg-background">
+    <div className="relative flex min-h-screen bg-background">
+      <div className="grid-bg pointer-events-none absolute inset-0 opacity-30" />
       {/* Sidebar (desktop) */}
-      <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 flex-col border-r border-border bg-card lg:flex">
+      <aside className="glass-strong fixed inset-y-0 left-0 z-30 hidden w-64 flex-col lg:flex">
         <div className="flex h-16 items-center border-b border-border px-5">
           <Logo size="sm" />
         </div>
@@ -86,7 +87,7 @@ export function AdminLayout({ children, title }: { children: ReactNode; title: s
       </aside>
 
       {/* Mobile top bar */}
-      <div className="fixed inset-x-0 top-0 z-30 flex h-16 items-center justify-between border-b border-border bg-card px-4 lg:hidden">
+      <div className="glass-strong fixed inset-x-0 top-0 z-30 flex h-16 items-center justify-between px-4 lg:hidden">
         <Logo size="sm" />
         <button onClick={() => setMobileOpen(!mobileOpen)} aria-label="Toggle admin menu" className="rounded-md p-2 hover:bg-accent/15">
           {mobileOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
@@ -110,7 +111,7 @@ export function AdminLayout({ children, title }: { children: ReactNode; title: s
       )}
 
       {/* Main */}
-      <div className="flex-1 pt-16 lg:pl-64 lg:pt-0">
+      <div className="relative flex-1 pt-16 lg:pl-64 lg:pt-0">
         <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-10">
           <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
             <h1 className="font-heading text-2xl font-bold tracking-tight">{title}</h1>
