@@ -52,16 +52,19 @@ function HexCta({
   href?: string
 }) {
   const cls = cn(
-    'hex-clip relative inline-flex overflow-hidden px-7 py-3 font-mono text-[11px] uppercase tracking-[0.2em] text-primary-foreground transition-transform hover:scale-[1.03]',
+    'group hex-clip relative inline-flex overflow-hidden px-7 py-3 font-mono text-[11px] uppercase tracking-[0.2em] text-primary-foreground transition-all duration-500 ease-out hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-[0_0_30px_rgba(183,163,90,0.18)] active:translate-y-0 active:scale-[0.99]',
     className
   )
-  const style = { background: 'var(--gradient-brand)' } as const
+  const style = {
+    background: 'var(--gradient-brand)',
+    boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.15), 0 18px 32px -24px rgba(23,61,45,0.8)',
+  } as const
   const inner = (
     <>
-      <span className="relative z-10 inline-flex items-center gap-2">{children}</span>
+      <span className="relative z-10 inline-flex items-center gap-2 transition-transform duration-500 group-hover:translate-x-0.5">{children}</span>
       <span
-        className="absolute inset-y-0 -left-1/3 w-1/3 opacity-40"
-        style={{ background: 'var(--gradient-accent)', animation: 'sheen 3.4s ease-in-out infinite' }}
+        className="absolute inset-y-0 -left-1/3 w-1/3 opacity-40 transition-all duration-500 ease-out group-hover:opacity-80"
+        style={{ background: 'var(--gradient-accent)', animation: 'sheen 3.4s ease-in-out infinite alternate' }}
       />
     </>
   )
@@ -111,7 +114,7 @@ export function Navbar() {
                   href={item.href}
                   className={cn(
                     'relative block px-4 py-2 font-mono text-[11px] uppercase tracking-[0.22em] transition-colors',
-                    active ? 'text-foreground' : 'text-muted-foreground hover:text-foreground'
+                    active ? 'text-gold' : 'text-muted-foreground hover:text-foreground'
                   )}
                   aria-current={active ? 'page' : undefined}
                 >
@@ -124,7 +127,6 @@ export function Navbar() {
         <div className="hidden items-center gap-2 md:flex">
           <HexCta onClick={() => navigate('/contact')}>
             Start a Project
-            <ArrowRight className="h-3.5 w-3.5" />
           </HexCta>
           <ThemeToggle />
         </div>
@@ -160,7 +162,6 @@ export function Navbar() {
             })}
             <HexCta className="mt-3 w-full" onClick={() => navigate('/contact')}>
               Start a Project
-              <ArrowRight className="h-4 w-4" />
             </HexCta>
           </nav>
         </div>

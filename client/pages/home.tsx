@@ -54,7 +54,7 @@ const WHY = [
 ]
 
 export default function HomePage() {
-  usePageMeta('Hexocode — Digital Products Built for Real Businesses', 'We design and build websites, web applications, mobile apps and custom software for startups, stores and growing companies.')
+  usePageMeta('Hexocode', 'We design and build websites, web applications, mobile apps and custom software for startups, stores and growing companies.')
 
   const settings = { tagline: '' }
   const projects: Project[] = []
@@ -62,8 +62,15 @@ export default function HomePage() {
   const packages: Package[] = []
   const testimonials: Testimonial[] = []
 
+  const ROTATING = ['web platforms', 'mobile apps', 'design systems', 'AI products']
+  const [wordIndex, setWordIndex] = useState(0)
   const [tilt, setTilt] = useState({ x: 0, y: 0 })
   const stageRef = useRef<HTMLDivElement | null>(null)
+
+  useEffect(() => {
+    const id = window.setInterval(() => setWordIndex((i) => (i + 1) % ROTATING.length), 2400)
+    return () => window.clearInterval(id)
+  }, [])
 
   useEffect(() => {
     const onMove = (e: PointerEvent) => {
@@ -93,57 +100,28 @@ export default function HomePage() {
         />
         <div
           ref={stageRef}
-          className="relative z-10 mx-auto grid min-h-screen max-w-6xl items-center gap-10 px-5 pb-20 pt-32 lg:grid-cols-[1.05fr_0.95fr]"
+          className="relative z-10 mx-auto flex min-h-screen max-w-6xl items-center justify-center px-5 pb-20 pt-32"
         >
-          <div>
-            <h1
-              className="anim-rise font-heading text-[clamp(2.6rem,7vw,5.2rem)] leading-[0.95] tracking-tight"
-              style={{ animationDelay: '0.2s' }}
+          <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+            <div
+              className="relative w-[min(68vw,38rem)] aspect-square max-w-full opacity-90"
+              style={{ perspective: '1200px' }}
+              aria-hidden="true"
             >
-              Digital products built for <span className="text-accent-metal">real businesses</span>.
-            </h1>
-            <p className="anim-rise mt-6 max-w-md text-sm leading-relaxed text-muted-foreground sm:text-base" style={{ animationDelay: '0.35s' }}>
-              {settings?.tagline ? `${settings.tagline} ` : ''}
-              Hexocode designs and builds websites, web applications, mobile apps and custom business
-              systems for startups, stores and growing companies — at a fraction of agency cost.
-            </p>
-            <div className="anim-rise mt-9 flex flex-wrap items-center gap-4" style={{ animationDelay: '0.5s' }}>
-              <HexCta href="/contact">
-                Start a Project
-                <ArrowRight className="h-4 w-4" />
-              </HexCta>
-              <Link
-                href="/projects"
-                className="glass inline-flex items-center rounded-full px-8 py-4 font-mono text-[11px] uppercase tracking-[0.22em] transition-transform hover:scale-[1.03]"
-              >
-                View Our Work
-              </Link>
-            </div>
-            <dl className="anim-rise mt-12 grid max-w-md grid-cols-1 gap-4 sm:grid-cols-2" style={{ animationDelay: '0.65s' }}>
-              {CAPABILITIES.map(({ Icon, label }) => (
-                <div key={label} className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Icon className="h-4 w-4 text-gold" />
-                  <dt className="font-mono text-[10px] uppercase tracking-[0.18em]">{label}</dt>
-                </div>
-              ))}
-            </dl>
-          </div>
-
-          <div className="relative hidden animate-fade-in lg:block" aria-hidden="true">
-            <div className="relative mx-auto aspect-square w-full max-w-md" style={{ perspective: '1200px' }}>
               <div
                 className="absolute inset-0 transition-transform duration-300 ease-out"
                 style={{ transform: `rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)` }}
               >
-                <div className="anim-spin-slow absolute inset-6 rounded-[38%] border border-dashed opacity-40" />
+                <div className="anim-spin-slow absolute inset-0 rounded-[38%] border border-dashed border-[color:var(--brand-accent)]/70 opacity-80" />
                 <div
-                  className="anim-spin-slow hex-clip-v absolute inset-14 opacity-20"
+                  className="anim-spin-slow hex-clip-v absolute inset-[14%] opacity-20"
                   style={{ background: 'var(--gradient-brand)', animationDirection: 'reverse' }}
                 />
+                <div className="absolute inset-[18%]" aria-hidden="true" />
                 {[0, 1, 2, 3, 4, 5].map((i) => (
                   <span
                     key={i}
-                    className="hex-clip-v absolute h-6 w-6"
+                    className="hex-clip-v absolute h-7 w-7"
                     style={{
                       background: i % 2 ? 'var(--gradient-accent)' : 'var(--gradient-brand)',
                       left: `${50 + 46 * Math.cos((Math.PI / 3) * i)}%`,
@@ -155,43 +133,95 @@ export default function HomePage() {
                 ))}
               </div>
             </div>
-            <div className="glass-strong relative -mt-8 rounded-xl p-6">
-              <div className="mb-5 flex items-center gap-2">
-                <span className="h-3 w-3 rounded-full bg-gold/80" />
-                <span className="h-3 w-3 rounded-full bg-secondary" />
-                <span className="h-3 w-3 rounded-full bg-muted" />
-                <span className="ml-3 font-mono text-xs text-muted-foreground">hexocode / production</span>
-              </div>
-              <div className="space-y-3 font-mono text-[13px] leading-relaxed">
-                <p><span className="text-gold">const</span> <span className="text-foreground">product</span> <span className="text-muted-foreground">=</span> <span className="text-secondary-foreground/90">await</span> <span className="text-gold">hexocode</span><span className="text-muted-foreground">.</span><span className="text-foreground">build</span><span className="text-muted-foreground">({'{'}</span></p>
-                <p className="pl-6 text-muted-foreground">stack: <span className="text-foreground">'react · typescript · postgres'</span>,</p>
-                <p className="pl-6 text-muted-foreground">design: <span className="text-foreground">'crafted, not templated'</span>,</p>
-                <p className="pl-6 text-muted-foreground">support: <span className="text-foreground">'long-term'</span>,</p>
-                <p className="pl-6 text-muted-foreground">agency_overhead: <span className="text-gold">false</span>,</p>
-                <p><span className="text-muted-foreground">{'}'});</span></p>
-                <p className="pt-2"><span className="text-muted-foreground">// status:</span> <span className="text-gold">shipped ✓</span></p>
-              </div>
-              <div className="mt-6 grid grid-cols-3 gap-3">
-                {['Websites', 'Web Apps', 'Mobile'].map((t) => (
-                  <div key={t} className="rounded-md border border-border bg-secondary/15 px-3 py-2.5 text-center text-xs font-medium text-muted-foreground">
-                    {t}
-                  </div>
+          </div>
+
+          <div className="relative z-10 mx-auto max-w-5xl text-center">
+            <h1 className="anim-rise mt-6 text-left font-display text-[clamp(3rem,7vw,8rem)] leading-[0.8] tracking-[-0.06em]" style={{ animationDelay: '0.2s' }}>
+              <span className="inline">We build</span>{' '}
+              <span className="relative mx-1 inline-block h-[0.92em] overflow-hidden align-middle">
+                {ROTATING.map((word, i) => (
+                  <span
+                    key={word}
+                    className="block text-accent-metal transition-all duration-700"
+                    style={{
+                      transform: `translateY(${(i - wordIndex) * 100}%)`,
+                      position: i === 0 ? 'relative' : 'absolute',
+                      inset: i === 0 ? undefined : 0,
+                    }}
+                  >
+                    {word}
+                  </span>
                 ))}
-              </div>
+              </span>
+              {' '}<span className="inline">for real businesses.</span>
+            </h1>
+            <p className="anim-rise mx-auto mt-6 max-w-3xl text-sm leading-relaxed text-muted-foreground sm:text-base" style={{ animationDelay: '0.35s' }}>
+              {settings?.tagline ? `${settings.tagline} ` : ''}
+              Hexocode designs and builds web platforms, mobile apps, design systems and custom software for
+              startups, stores and growing companies — with the clarity, speed and craftsmanship that real
+              businesses need.
+            </p>
+            <div className="anim-rise mt-9 flex flex-wrap items-center justify-center gap-4" style={{ animationDelay: '0.5s' }}>
+              <HexCta href="/contact">
+                Start a Project
+              </HexCta>
+              <Link
+                href="/projects"
+                className="glass inline-flex items-center rounded-full px-8 py-4 font-mono text-[11px] uppercase tracking-[0.22em] transition-transform hover:scale-[1.03]"
+              >
+                View Our Work
+              </Link>
             </div>
+            <dl className="anim-rise mx-auto mt-12 grid max-w-2xl grid-cols-1 gap-4 sm:grid-cols-2" style={{ animationDelay: '0.65s' }}>
+              {CAPABILITIES.map(({ Icon, label }) => (
+                <div key={label} className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
+                  <Icon className="h-4 w-4 text-gold" />
+                  <dt className="font-mono text-[10px] uppercase tracking-[0.18em]">{label}</dt>
+                </div>
+              ))}
+            </dl>
           </div>
         </div>
 
         <div className="absolute inset-x-0 bottom-0 overflow-hidden border-t py-3">
           <div className="anim-marquee flex w-max gap-10 font-mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
             {Array.from({ length: 2 }).map((_, r) => (
-              <span key={r} className="flex gap-10">
-                {['Websites', 'Web Apps', 'Mobile', ...CAPABILITIES.map((c) => c.label)].map((t) => (
-                  <span key={`${r}-${t}`} className="flex items-center gap-10">
-                    {t}
-                    <span className="hex-clip-v inline-block h-2 w-2" style={{ background: 'var(--accent)' }} />
+              <span key={r} className="flex items-center gap-5">
+                {['Websites', 'Web Apps', 'Mobile', ...CAPABILITIES.map((c) => c.label)].map((t, index, arr) => (
+                  <span key={`${r}-${t}`} className="flex items-center gap-5">
+                    <span>{t}</span>
+                    {index < arr.length - 1 && (
+                      <span
+                        className="hex-clip-v inline-block shrink-0"
+                        aria-hidden="true"
+                        style={{
+                          width: '10px',
+                          height: '10px',
+                          background: 'color-mix(in oklab, var(--brand-accent) 80%, transparent)',
+                          border: '1px solid color-mix(in oklab, var(--brand-accent) 95%, white)',
+                          boxShadow: '0 0 18px rgba(183,163,90,0.35)',
+                          verticalAlign: 'middle',
+                          opacity: 1,
+                        }}
+                      />
+                    )}
                   </span>
                 ))}
+                {r < 1 && (
+                  <span
+                    className="hex-clip-v inline-block shrink-0"
+                    aria-hidden="true"
+                    style={{
+                      width: '10px',
+                      height: '10px',
+                      background: 'color-mix(in oklab, var(--brand-accent) 80%, transparent)',
+                      border: '1px solid color-mix(in oklab, var(--brand-accent) 95%, white)',
+                      boxShadow: '0 0 18px rgba(183,163,90,0.35)',
+                      verticalAlign: 'middle',
+                      opacity: 1,
+                    }}
+                  />
+                )}
               </span>
             ))}
           </div>
@@ -348,7 +378,6 @@ export default function HomePage() {
               </p>
               <HexCta href="/contact" className="relative mt-8">
                 Start a Conversation
-                <ArrowRight className="h-4 w-4" />
               </HexCta>
             </div>
           </Reveal>

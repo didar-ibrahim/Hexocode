@@ -1,7 +1,7 @@
 // Hexocode UI kit — shadcn-style primitives built on the design tokens.
 import React, { ButtonHTMLAttributes, InputHTMLAttributes, TextareaHTMLAttributes, SelectHTMLAttributes, ReactNode, useEffect, useRef, useState } from 'react'
 import { cn } from '../lib/utils'
-import { X, Loader2, Star } from 'lucide-react'
+import { X, Loader2, Star, ChevronDown } from 'lucide-react'
 
 // ---- Button ---------------------------------------------------------------
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
@@ -66,18 +66,84 @@ export function Textarea({ className, ...props }: TextareaHTMLAttributes<HTMLTex
   )
 }
 
-export function Select({ className, children, ...props }: SelectHTMLAttributes<HTMLSelectElement>) {
+export function Select({ className, children, value, onChange, placeholder = 'Select…', ...props }: SelectHTMLAttributes<HTMLSelectElement> & { placeholder?: string }) {
+  const containerRef = useRef<HTMLDivElement | null>(null)
+  const [open, setOpen] = useState(false)
+
+  const options = React.Children.toArray(children).flatMap((child) => {
+    if (!React.isValidElement(child) || child.type !== 'option') return []
+
+    const optionProps = child.props as { value?: string | number; children?: ReactNode; disabled?: boolean }
+    const label = typeof optionProps.children === 'string' || typeof optionProps.children === 'number' ? String(optionProps.children) : String(optionProps.value ?? '')
+    const optionValue = String(optionProps.value ?? label)
+
+    return [{ value: optionValue, label, disabled: !!optionProps.disabled }]
+  })
+
+  const selectedLabel = options.find((option) => option.value === String(value))?.label ?? placeholder
+
+  useEffect(() => {
+    const handleClick = (event: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+        setOpen(false)
+      }
+    }
+
+    document.addEventListener('mousedown', handleClick)
+    return () => document.removeEventListener('mousedown', handleClick)
+  }, [])
+
+  const handleSelect = (nextValue: string) => {
+    setOpen(false)
+    if (onChange) {
+      onChange({ target: { value: nextValue } } as React.ChangeEvent<HTMLSelectElement>)
+    }
+  }
+
   return (
-    <select
-      className={cn(
-        'flex h-10 w-full rounded-full border border-input bg-card px-4 text-sm glass',
-        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60',
-        className
+    <div ref={containerRef} className="relative w-full">
+      <button
+        type="button"
+        className={cn(
+          'flex h-12 w-full items-center justify-between rounded-full border border-[color:var(--glass-border)] bg-[color:var(--glass-bg)] px-4 pr-11 text-left text-sm text-foreground shadow-[inset_0_1px_0_rgba(255,255,255,0.12)] backdrop-blur-[var(--glass-blur)] transition-all duration-200',
+          'focus-visible:outline-none focus-visible:ring-0',
+          'hover:border-[color:var(--brand-accent)]/60',
+          open && 'border-[color:var(--brand-accent)] shadow-[0_0_0_2px_rgba(183,163,90,0.12)]',
+          className
+        )}
+        style={{ outline: 'none' }}
+        onClick={() => setOpen((prev) => !prev)}
+        aria-expanded={open}
+        aria-haspopup="listbox"
+        {...props}
+      >
+        <span className={cn('truncate', !value && 'text-muted-foreground')}>{selectedLabel}</span>
+        <ChevronDown className={cn('h-4 w-4 shrink-0 text-gold transition-transform duration-200', open && 'rotate-180')} />
+      </button>
+
+      {open && (
+        <div className="absolute z-50 mt-2 w-full overflow-hidden rounded-2xl border border-[color:var(--glass-border)] bg-[color:var(--glass-bg)] p-1.5 shadow-[0_28px_80px_-30px_rgba(10,32,23,0.8)] backdrop-blur-[var(--glass-blur)]">
+          {options.map((option) => {
+            const isSelected = String(option.value) === String(value ?? '')
+            return (
+              <button
+                key={option.value || option.label}
+                type="button"
+                className={cn(
+                  'flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-left text-sm transition-colors',
+                  isSelected ? 'bg-gold/12 text-gold' : 'text-foreground hover:bg-white/5'
+                )}
+                onClick={() => handleSelect(option.value)}
+                disabled={option.disabled}
+              >
+                <span className="truncate">{option.label}</span>
+                {isSelected && <span className="h-2.5 w-2.5 rounded-full bg-gold" />}
+              </button>
+            )
+          })}
+        </div>
       )}
-      {...props}
-    >
-      {children}
-    </select>
+    </div>
   )
 }
 
