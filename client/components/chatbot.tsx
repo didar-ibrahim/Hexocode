@@ -13,33 +13,54 @@ type Message = {
 export function Chatbot() {
   const [isOpen, setIsOpen] = useState(false)
   const [messages, setMessages] = useState<Message[]>([])
+  const [inputValue, setInputValue] = useState('')
+  const [isTyping, setIsTyping] = useState(false)
+  const [hasUnread, setHasUnread] = useState(true) // Start with an unread ping
+  
   const { t } = useLanguage()
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   // Initialize greeting
   useEffect(() => {
     if (isOpen && messages.length === 0) {
-      setMessages([
-        { id: '1', sender: 'bot', text: t.chatbot.greeting }
-      ])
+      setMessages([{ id: '1', sender: 'bot', text: t.chatbot.greeting }])
+      setHasUnread(false)
     }
+    if (isOpen) setHasUnread(false)
   }, [isOpen, messages.length, t.chatbot.greeting])
 
   useEffect(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' })
     }
-  }, [messages])
+  }, [messages, isTyping])
+
+  const replyAsBot = (answer: string) => {
+    setIsTyping(true)
+    setTimeout(() => {
+      setIsTyping(false)
+      const botMsg: Message = { id: Date.now().toString(), sender: 'bot', text: answer }
+      setMessages((prev) => [...prev, botMsg])
+      if (!isOpen) setHasUnread(true)
+    }, 1200)
+  }
 
   const handleQuickReply = (question: string, answer: string) => {
     const userMsg: Message = { id: Date.now().toString(), sender: 'user', text: question }
-    setMessages(prev => [...prev, userMsg])
+    setMessages((prev) => [...prev, userMsg])
+    replyAsBot(answer)
+  }
+
+  const handleSend = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!inputValue.trim() || isTyping) return
     
-    // Simulate thinking delay
-    setTimeout(() => {
-      const botMsg: Message = { id: (Date.now() + 1).toString(), sender: 'bot', text: answer }
-      setMessages(prev => [...prev, botMsg])
-    }, 600)
+    const userMsg: Message = { id: Date.now().toString(), sender: 'user', text: inputValue.trim() }
+    setMessages((prev) => [...prev, userMsg])
+    setInputValue('')
+    
+    // Fallback response for custom text
+    replyAsBot(t.chatbot.fallbackAnswer)
   }
 
   return (
@@ -54,14 +75,15 @@ export function Chatbot() {
         aria-label="Open chat"
       >
         <MessageCircle className="h-6 w-6 text-primary-foreground" />
+        {hasUnread && (
+          <span className="absolute right-0 top-0 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 ring-2 ring-background animate-pulse" />
+        )}
       </button>
 
       <div
         className={cn(
           'glass-strong fixed bottom-6 right-6 z-50 flex w-[360px] flex-col overflow-hidden rounded-2xl shadow-2xl transition-all duration-500 ease-out sm:max-w-[calc(100vw-3rem)]',
-          isOpen
-            ? 'translate-y-0 opacity-100'
-            : 'pointer-events-none translate-y-10 opacity-0'
+          isOpen ? 'translate-y-0 opacity-100' : 'pointer-events-none translate-y-10 opacity-0'
         )}
         style={{ maxHeight: 'calc(100vh - 5rem)', height: '560px' }}
       >
@@ -86,16 +108,10 @@ export function Chatbot() {
           </button>
         </div>
 
-        {/* Messages */}
+        {/* Messages Area */}
         <div className="flex-1 overflow-y-auto p-5 space-y-4 scrollbar-thin scrollbar-thumb-white/10">
           {messages.map((msg) => (
-            <div
-              key={msg.id}
-              className={cn(
-                'flex w-full',
-                msg.sender === 'user' ? 'justify-end' : 'justify-start'
-              )}
-            >
+            <div key={msg.id} className={cn('flex w-full', msg.sender === 'user' ? 'justify-end' : 'justify-start')}>
               <div
                 className={cn(
                   'max-w-[85%] rounded-2xl px-4 py-2.5 text-sm',
@@ -108,46 +124,64 @@ export function Chatbot() {
               </div>
             </div>
           ))}
+
+          {isTyping && (
+            <div className="flex w-full justify-start animate-fade-in">
+              <div className="flex max-w-[85%] items-center gap-1.5 rounded-2xl rounded-tl-sm border border-white/10 bg-white/5 px-4 py-3 text-sm text-muted-foreground">
+                <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-gold/70" style={{ animationDelay: '0ms' }} />
+                <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-gold/70" style={{ animationDelay: '150ms' }} />
+                <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-gold/70" style={{ animationDelay: '300ms' }} />
+              </div>
+            </div>
+          )}
           
-          {/* Quick Replies - Show only if last message is from bot */}
-          {messages.length > 0 && messages[messages.length - 1].sender === 'bot' && (
+          {/* Quick Replies - Only show if the bot just sent a message and isn't typing */}
+          {messages.length > 0 && messages[messages.length - 1].sender === 'bot' && !isTyping && (
             <div className="flex flex-col gap-2 pt-2 animate-fade-up">
-              <button
-                onClick={() => handleQuickReply(t.chatbot.quickReplies.services, t.chatbot.quickReplies.servicesAnswer)}
-                className="flex w-fit items-center gap-2 rounded-full border border-gold/30 bg-gold/5 px-4 py-2 text-xs text-gold transition-colors hover:bg-gold/15"
-              >
-                {t.chatbot.quickReplies.services}
-                <ChevronRight className="h-3 w-3" />
-              </button>
-              <button
-                onClick={() => handleQuickReply(t.chatbot.quickReplies.pricing, t.chatbot.quickReplies.pricingAnswer)}
-                className="flex w-fit items-center gap-2 rounded-full border border-gold/30 bg-gold/5 px-4 py-2 text-xs text-gold transition-colors hover:bg-gold/15"
-              >
-                {t.chatbot.quickReplies.pricing}
-                <ChevronRight className="h-3 w-3" />
-              </button>
-              <button
-                onClick={() => handleQuickReply(t.chatbot.quickReplies.human, t.chatbot.quickReplies.humanAnswer)}
-                className="flex w-fit items-center gap-2 rounded-full border border-gold/30 bg-gold/5 px-4 py-2 text-xs text-gold transition-colors hover:bg-gold/15"
-              >
-                {t.chatbot.quickReplies.human}
-                <ChevronRight className="h-3 w-3" />
-              </button>
+              {[
+                { q: t.chatbot.quickReplies.services, a: t.chatbot.quickReplies.servicesAnswer },
+                { q: t.chatbot.quickReplies.pricing, a: t.chatbot.quickReplies.pricingAnswer },
+                { q: t.chatbot.quickReplies.human, a: t.chatbot.quickReplies.humanAnswer },
+              ].map((reply, i) => (
+                <button
+                  key={i}
+                  onClick={() => handleQuickReply(reply.q, reply.a)}
+                  className="flex w-fit items-center gap-2 rounded-full border border-gold/30 bg-gold/5 px-4 py-2 text-xs text-gold transition-colors hover:bg-gold/15 text-left"
+                >
+                  {reply.q}
+                  <ChevronRight className="h-3 w-3 shrink-0" />
+                </button>
+              ))}
             </div>
           )}
           <div ref={messagesEndRef} />
         </div>
 
-        {/* Footer / Contact CTA */}
+        {/* Input Area */}
         <div className="border-t border-border/50 bg-black/20 p-4">
+          <form onSubmit={handleSend} className="relative flex items-center">
+            <input
+              type="text"
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              placeholder={t.chatbot.placeholder}
+              className="h-11 w-full rounded-full border border-white/10 bg-white/5 pl-4 pr-12 text-sm text-foreground placeholder:text-muted-foreground focus:border-gold/50 focus:outline-none focus:ring-1 focus:ring-gold/50"
+            />
+            <button
+              type="submit"
+              disabled={!inputValue.trim() || isTyping}
+              className="absolute right-1.5 flex h-8 w-8 items-center justify-center rounded-full bg-gold text-primary-foreground transition-transform disabled:opacity-50 disabled:hover:scale-100 hover:scale-105"
+            >
+              <Send className="h-3.5 w-3.5" />
+            </button>
+          </form>
           <button
             onClick={() => {
               setIsOpen(false)
               navigate('/contact')
             }}
-            className="flex w-full items-center justify-center gap-2 rounded-xl bg-white/5 px-4 py-3 text-sm font-medium text-foreground transition-colors hover:bg-white/10"
+            className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl border border-white/5 bg-transparent px-4 py-2 text-xs text-muted-foreground transition-colors hover:bg-white/5 hover:text-foreground"
           >
-            <Send className="h-4 w-4" />
             {t.chatbot.contactUs}
           </button>
         </div>
