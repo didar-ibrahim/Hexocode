@@ -30,19 +30,22 @@ import { AdminTeamList, AdminTeamEditor } from './pages/admin/team'
 import AdminSettingsPage from './pages/admin/settings'
 import AdminProfilePage from './pages/admin/profile'
 
+import { LanguageProvider, useLanguage } from './lib/i18n'
+
 function NotFoundPage() {
+  const { t } = useLanguage()
   return (
     <main className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-6 text-center">
       <HexField className="absolute inset-0 h-full w-full" />
       <div className="glass-strong relative z-10 max-w-md rounded-3xl px-8 py-12">
         <p className="font-heading text-6xl font-bold tracking-tight text-accent-metal">404</p>
-        <h1 className="mt-4 text-2xl font-semibold text-foreground">Page not found</h1>
-        <p className="mt-2 text-muted-foreground">The page you are looking for does not exist or has been moved.</p>
+        <h1 className="mt-4 text-2xl font-semibold text-foreground">{t.common.pageNotFound}</h1>
+        <p className="mt-2 text-muted-foreground">{t.common.pageNotFoundDesc}</p>
         <Link
           href="/"
           className="mt-6 inline-flex font-mono text-[11px] uppercase tracking-[0.22em] text-gold"
         >
-          Back to homepage
+          {t.common.backToHomepage}
         </Link>
       </div>
     </main>
@@ -91,12 +94,14 @@ function Router() {
 
 function App() {
   return (
-    <SiteProvider>
-      <AuthProvider>
-        <Router />
-        <Toaster />
-      </AuthProvider>
-    </SiteProvider>
+    <LanguageProvider>
+      <SiteProvider>
+        <AuthProvider>
+          <Router />
+          <Toaster />
+        </AuthProvider>
+      </SiteProvider>
+    </LanguageProvider>
   )
 }
 

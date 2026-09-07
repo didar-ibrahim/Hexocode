@@ -1,6 +1,7 @@
 import { Link } from './link'
 import { Card, Badge, Rating } from './ui'
 import type { Project, Service, Package, Testimonial } from '../lib/api'
+import { useLanguage } from '../lib/i18n'
 import { ArrowRight, ArrowUpRight, Check, Quote, Globe, LayoutDashboard, Smartphone, ShoppingCart, Server, Wrench, Code, Database, Cpu, Layers, Zap } from 'lucide-react'
 import { cn } from '../lib/utils'
 
@@ -66,6 +67,7 @@ export function ProjectCard({ project, large }: { project: Project; large?: bool
 }
 
 export function ServiceCard({ service }: { service: Service }) {
+  const { t } = useLanguage()
   return (
     <Card hover className="flex h-full flex-col p-6">
       <div className="mb-4 inline-flex h-12 w-12 items-center justify-center hex-clip-v text-gold" style={{ background: 'color-mix(in oklab, var(--brand-accent) 18%, transparent)' }}>
@@ -77,37 +79,38 @@ export function ServiceCard({ service }: { service: Service }) {
         href={`/services#${service.slug}`}
         className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-gold transition-colors hover:brightness-110"
       >
-        Learn more
+        {t.common.learnMore}
         <ArrowRight className="h-4 w-4" />
       </Link>
     </Card>
   )
 }
 
-export function formatPrice(pkg: Package): string {
+export function formatPrice(pkg: Package, customQuoteText: string = 'Custom Quote'): string {
   if (pkg.pricing_label && !pkg.price) return pkg.pricing_label
   const currency = pkg.currency === 'USD' ? '$' : pkg.currency ? `${pkg.currency} ` : '$'
-  if (!pkg.price) return 'Custom Quote'
+  if (!pkg.price) return customQuoteText
   const label = pkg.pricing_label ? `${pkg.pricing_label} ` : ''
   const numeric = /^\d+$/.test(pkg.price) ? `${currency}${Number(pkg.price).toLocaleString()}` : pkg.price
   return `${label}${numeric}`
 }
 
 export function PackageCard({ pkg }: { pkg: Package }) {
+  const { t } = useLanguage()
   return (
     <Card hover className={cn('relative flex h-full flex-col p-6', pkg.featured === 1 && 'border-gold/60 shadow-lg shadow-gold/5')}>
       {pkg.featured === 1 && (
         <div className="absolute -top-3 left-1/2 -translate-x-1/2">
           <Badge variant="gold" className="bg-gold text-gold-foreground">
-            Most Popular
+            {t.common.mostPopular}
           </Badge>
         </div>
       )}
       <h3 className="font-heading text-xl font-semibold">{pkg.name}</h3>
       <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{pkg.description}</p>
       <div className="mt-5">
-        <span className="font-heading text-3xl font-bold tracking-tight">{formatPrice(pkg)}</span>
-        {pkg.delivery_time && <span className="mt-1 block text-xs text-muted-foreground">Delivery: {pkg.delivery_time}</span>}
+        <span className="font-heading text-3xl font-bold tracking-tight">{formatPrice(pkg, t.common.customQuote)}</span>
+        {pkg.delivery_time && <span className="mt-1 block text-xs text-muted-foreground">Livraison / Delivery: {pkg.delivery_time}</span>}
       </div>
       <ul className="mt-6 flex-1 space-y-2.5">
         {pkg.features.map((f, i) => (
@@ -127,7 +130,7 @@ export function PackageCard({ pkg }: { pkg: Package }) {
           )}
           style={pkg.featured === 1 ? { background: 'var(--gradient-brand)' } : undefined}
         >
-          {pkg.cta_text || 'Start a Project'}
+          {pkg.cta_text || t.common.startProject}
         </span>
       </Link>
     </Card>

@@ -2,6 +2,7 @@ import { PublicLayout, PageHero } from '../components/layout'
 import { SectionHeading, Badge } from '../components/ui'
 import { SocialLinks } from '../components/social'
 import { useApi, usePageMeta, useReveal } from '../lib/hooks'
+import { useLanguage } from '../lib/i18n'
 import { api, TeamMember } from '../lib/api'
 import { useSite } from '../lib/site'
 import { Compass, Eye, Heart, Code2 } from 'lucide-react'
@@ -16,29 +17,22 @@ function Reveal({ children, delay = 0 }: { children: ReactNode; delay?: number }
   )
 }
 
-const VALUES = [
-  { Icon: Compass, title: 'Honesty over salesmanship', text: 'We tell you what you need to hear, not what wins the contract — including when a simpler, cheaper solution is the right one.' },
-  { Icon: Code2, title: 'Craft over shortcuts', text: 'Readable code, tested flows, documented decisions. The next developer who touches your system will thank us — often that developer is you.' },
-  { Icon: Eye, title: 'Clarity over jargon', text: 'You\'ll always understand what we\'re building, why, and what it costs. Technical decisions get explained in business terms.' },
-  { Icon: Heart, title: 'Long-term over launch-day', text: 'We build things we\'ll be proud to maintain. That shapes every architectural choice from day one.' },
-]
-
 const STACK = ['React', 'Next.js', 'TypeScript', 'Node.js', 'React Native', 'PostgreSQL', 'Supabase', 'Tailwind CSS', 'Docker', 'Redis', 'Stripe']
 
 export default function AboutPage() {
-  usePageMeta('About — Hexocode', 'Meet the two developers behind Hexocode — our story, values and how we work.')
+  const { t } = useLanguage()
+  usePageMeta(`${t.nav.about} — Hexocode`, t.about.description)
   const site = useSite()
   const { data, loading } = useApi<{ team: TeamMember[] }>(() => api.get('/api/public/team'))
+
+  const valueIcons = [Compass, Code2, Eye, Heart]
 
   return (
     <PublicLayout>
       <PageHero
-        eyebrow="About us"
-        title="Two developers who answer their own email."
-        description={
-          site.about_story ||
-          'Hexocode is a two-developer software studio. We design and build websites, web applications, mobile apps and custom business systems for clients who want a technical partner, not just a vendor.'
-        }
+        eyebrow={t.nav.about}
+        title={t.about.title}
+        description={site.about_story || t.about.description}
       />
 
       {/* Mission / Vision */}
@@ -46,17 +40,17 @@ export default function AboutPage() {
         <div className="mx-auto grid max-w-7xl gap-8 px-4 sm:px-6 md:grid-cols-2 lg:px-8">
           <Reveal>
             <div className="glass h-full rounded-2xl p-8">
-              <p className="mb-3 font-mono text-xs font-semibold uppercase tracking-[0.2em] text-gold">Mission</p>
+              <p className="mb-3 font-mono text-xs font-semibold uppercase tracking-[0.2em] text-gold">{t.about.mission}</p>
               <p className="leading-relaxed text-foreground/90">
-                {site.mission || 'To give startups and growing businesses access to genuinely good software engineering — without agency overhead or opaque pricing.'}
+                {site.mission || t.about.missionDefault}
               </p>
             </div>
           </Reveal>
           <Reveal delay={100}>
             <div className="glass h-full rounded-2xl p-8">
-              <p className="mb-3 font-mono text-xs font-semibold uppercase tracking-[0.2em] text-gold">Vision</p>
+              <p className="mb-3 font-mono text-xs font-semibold uppercase tracking-[0.2em] text-gold">{t.about.vision}</p>
               <p className="leading-relaxed text-foreground/90">
-                {site.vision || 'A small studio known for work that lasts: products our clients still rely on years after launch.'}
+                {site.vision || t.about.visionDefault}
               </p>
             </div>
           </Reveal>
@@ -68,26 +62,29 @@ export default function AboutPage() {
         <div className="grid-bg absolute inset-0 opacity-40" />
         <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <Reveal>
-            <SectionHeading eyebrow="How we work" title="Development philosophy" />
+            <SectionHeading eyebrow={t.about.howWeWork} title={t.about.philosophyTitle} />
           </Reveal>
           <div className="grid gap-6 sm:grid-cols-2">
-            {VALUES.map(({ Icon, title, text }, i) => (
-              <Reveal key={title} delay={i * 80}>
-                <div className="glass group relative flex h-full gap-5 overflow-hidden rounded-2xl p-7">
-                  <span
-                    className="hex-clip-v absolute -right-6 -top-6 h-24 w-24 opacity-10 transition-opacity duration-500 group-hover:opacity-30"
-                    style={{ background: 'var(--gradient-accent)' }}
-                  />
-                  <span className="hex-clip-v flex h-11 w-11 shrink-0 items-center justify-center text-gold" style={{ background: 'color-mix(in oklab, var(--brand-accent) 18%, transparent)' }}>
-                    <Icon className="h-5 w-5 text-gold" />
-                  </span>
-                  <div>
-                    <h3 className="font-heading text-lg font-semibold">{title}</h3>
-                    <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{text}</p>
+            {t.about.values.map(({ title, text }, i) => {
+              const Icon = valueIcons[i % valueIcons.length]
+              return (
+                <Reveal key={title} delay={i * 80}>
+                  <div className="glass group relative flex h-full gap-5 overflow-hidden rounded-2xl p-7">
+                    <span
+                      className="hex-clip-v absolute -right-6 -top-6 h-24 w-24 opacity-10 transition-opacity duration-500 group-hover:opacity-30"
+                      style={{ background: 'var(--gradient-accent)' }}
+                    />
+                    <span className="hex-clip-v flex h-11 w-11 shrink-0 items-center justify-center text-gold" style={{ background: 'color-mix(in oklab, var(--brand-accent) 18%, transparent)' }}>
+                      <Icon className="h-5 w-5 text-gold" />
+                    </span>
+                    <div>
+                      <h3 className="font-heading text-lg font-semibold">{title}</h3>
+                      <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{text}</p>
+                    </div>
                   </div>
-                </div>
-              </Reveal>
-            ))}
+                </Reveal>
+              )
+            })}
           </div>
         </div>
       </section>
@@ -96,10 +93,10 @@ export default function AboutPage() {
       <section className="py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <Reveal>
-            <SectionHeading eyebrow="The team" title="The two people you'll actually work with" description="No account managers, no handoffs — you talk to the people writing the code." />
+            <SectionHeading eyebrow={t.about.teamEyebrow} title={t.about.teamTitle} description={t.about.teamDesc} />
           </Reveal>
           {loading ? (
-            <div className="py-10 text-center text-muted-foreground">Loading team…</div>
+            <div className="py-10 text-center text-muted-foreground">{t.common.loadingTeam}</div>
           ) : (
             <div className="mx-auto grid max-w-4xl gap-8 md:grid-cols-2">
               {(data?.team ?? []).map((m, i) => (
@@ -136,11 +133,11 @@ export default function AboutPage() {
         <div className="grid-bg absolute inset-0 opacity-40" />
         <div className="relative mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
           <Reveal>
-            <SectionHeading eyebrow="Toolbox" title="Technologies we work with" description="Proven, current tools — chosen per project, not per trend." />
+            <SectionHeading eyebrow={t.about.toolboxEyebrow} title={t.about.toolboxTitle} description={t.about.toolboxDesc} />
             <div className="mx-auto flex max-w-3xl flex-wrap justify-center gap-2.5">
-              {STACK.map((t) => (
-                <span key={t} className="glass rounded-full px-4 py-2 font-mono text-sm text-muted-foreground transition-colors hover:text-foreground">
-                  {t}
+              {STACK.map((tech) => (
+                <span key={tech} className="glass rounded-full px-4 py-2 font-mono text-sm text-muted-foreground transition-colors hover:text-foreground">
+                  {tech}
                 </span>
               ))}
             </div>

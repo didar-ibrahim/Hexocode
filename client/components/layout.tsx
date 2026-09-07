@@ -4,20 +4,34 @@ import { BrandMark, Logo } from './brand'
 import { SocialLinks } from './social'
 import { HexField } from './HexField'
 import { Splash } from './Splash'
+import { Chatbot } from './chatbot'
 import { useSite } from '../lib/site'
 import { useTheme } from '../lib/hooks'
+import { useLanguage } from '../lib/i18n'
 import { usePath, navigate } from '../lib/router'
 import { cn } from '../lib/utils'
-import { Menu, X, Sun, Moon, ArrowRight, Mail, MapPin } from 'lucide-react'
+import { Menu, X, Sun, Moon, ArrowRight, Mail, MapPin, Globe } from 'lucide-react'
 
-const NAV = [
-  { href: '/', label: 'Home' },
-  { href: '/projects', label: 'Projects' },
-  { href: '/services', label: 'Services' },
-  { href: '/packages', label: 'Packages' },
-  { href: '/about', label: 'About' },
-  { href: '/contact', label: 'Contact' },
-]
+function LanguageToggle() {
+  const { lang, setLang } = useLanguage()
+  return (
+    <button
+      onClick={() => setLang(lang === 'en' ? 'fr' : 'en')}
+      aria-label={lang === 'en' ? 'Passer en français' : 'Switch to English'}
+      title={lang === 'en' ? 'Passer en français' : 'Switch to English'}
+      className="glass hex-clip-v group relative grid h-11 px-3 font-mono text-[11px] font-bold uppercase tracking-wider place-items-center transition-transform duration-300 hover:scale-105"
+    >
+      <span
+        className="absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+        style={{ background: 'var(--gradient-accent)' }}
+      />
+      <span className="relative z-10 flex items-center gap-1 text-gold group-hover:text-primary-foreground">
+        <Globe className="h-3.5 w-3.5" />
+        {lang === 'en' ? 'FR' : 'EN'}
+      </span>
+    </button>
+  )
+}
 
 function ThemeToggle() {
   const { theme, toggle } = useTheme()
@@ -86,6 +100,16 @@ export function Navbar() {
   const path = usePath()
   const [open, setOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  const { t } = useLanguage()
+
+  const navItems = [
+    { href: '/', label: t.nav.home },
+    { href: '/projects', label: t.nav.projects },
+    { href: '/services', label: t.nav.services },
+    { href: '/packages', label: t.nav.packages },
+    { href: '/about', label: t.nav.about },
+    { href: '/contact', label: t.nav.contact },
+  ]
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24)
@@ -106,7 +130,7 @@ export function Navbar() {
       >
         <BrandMark />
         <ul className="ml-auto hidden items-center gap-1 md:flex" aria-label="Main navigation">
-          {NAV.map((item) => {
+          {navItems.map((item) => {
             const active = item.href === '/' ? path === '/' : path.startsWith(item.href)
             return (
               <li key={item.href}>
@@ -126,11 +150,13 @@ export function Navbar() {
         </ul>
         <div className="hidden items-center gap-2 md:flex">
           <HexCta onClick={() => navigate('/contact')}>
-            Start a Project
+            {t.nav.startProject}
           </HexCta>
+          <LanguageToggle />
           <ThemeToggle />
         </div>
         <div className="ml-auto flex items-center gap-1 md:hidden">
+          <LanguageToggle />
           <ThemeToggle />
           <button
             onClick={() => setOpen(!open)}
@@ -145,7 +171,7 @@ export function Navbar() {
       {open && (
         <div className="glass-strong absolute inset-x-4 top-[4.5rem] rounded-2xl px-4 pb-6 pt-2 md:hidden animate-fade-in">
           <nav aria-label="Mobile navigation">
-            {NAV.map((item) => {
+            {navItems.map((item) => {
               const active = item.href === '/' ? path === '/' : path.startsWith(item.href)
               return (
                 <Link
@@ -161,7 +187,7 @@ export function Navbar() {
               )
             })}
             <HexCta className="mt-3 w-full" onClick={() => navigate('/contact')}>
-              Start a Project
+              {t.nav.startProject}
             </HexCta>
           </nav>
         </div>
@@ -172,7 +198,18 @@ export function Navbar() {
 
 export function Footer() {
   const site = useSite()
+  const { t } = useLanguage()
   const year = new Date().getFullYear()
+
+  const navItems = [
+    { href: '/', label: t.nav.home },
+    { href: '/projects', label: t.nav.projects },
+    { href: '/services', label: t.nav.services },
+    { href: '/packages', label: t.nav.packages },
+    { href: '/about', label: t.nav.about },
+    { href: '/contact', label: t.nav.contact },
+  ]
+
   return (
     <footer className="relative overflow-hidden border-t">
       <div className="grid-bg pointer-events-none absolute inset-0 opacity-40" />
@@ -181,14 +218,14 @@ export function Footer() {
           <div className="md:col-span-1">
             <Logo />
             <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
-              A two-developer studio building websites, web apps, mobile apps and custom software for real businesses.
+              {t.about.description}
             </p>
             <SocialLinks links={site.social_links} className="mt-5" />
           </div>
           <nav aria-label="Footer navigation">
-            <h3 className="mb-4 font-mono text-xs font-semibold uppercase tracking-[0.18em] text-gold">Company</h3>
+            <h3 className="mb-4 font-mono text-xs font-semibold uppercase tracking-[0.18em] text-gold">{t.common.company}</h3>
             <ul className="space-y-2.5 text-sm">
-              {NAV.map((n) => (
+              {navItems.map((n) => (
                 <li key={n.href}>
                   <Link href={n.href} className="text-muted-foreground transition-colors hover:text-foreground">
                     {n.label}
@@ -198,9 +235,9 @@ export function Footer() {
             </ul>
           </nav>
           <nav aria-label="Footer services">
-            <h3 className="mb-4 font-mono text-xs font-semibold uppercase tracking-[0.18em] text-gold">Services</h3>
+            <h3 className="mb-4 font-mono text-xs font-semibold uppercase tracking-[0.18em] text-gold">{t.common.services}</h3>
             <ul className="space-y-2.5 text-sm">
-              {['Website Development', 'Web Applications', 'Mobile Apps', 'E-Commerce', 'Backend & APIs', 'Maintenance'].map((s) => (
+              {t.common.footerServices.map((s) => (
                 <li key={s}>
                   <Link href="/services" className="text-muted-foreground transition-colors hover:text-foreground">
                     {s}
@@ -210,7 +247,7 @@ export function Footer() {
             </ul>
           </nav>
           <div>
-            <h3 className="mb-4 font-mono text-xs font-semibold uppercase tracking-[0.18em] text-gold">Contact</h3>
+            <h3 className="mb-4 font-mono text-xs font-semibold uppercase tracking-[0.18em] text-gold">{t.common.contact}</h3>
             <ul className="space-y-3 text-sm text-muted-foreground">
               {site.email && (
                 <li className="flex items-center gap-2">
@@ -226,21 +263,21 @@ export function Footer() {
                   <span>{site.address}</span>
                 </li>
               )}
-              <li className="pt-2 text-xs">Typical response time: within 24 hours</li>
+              <li className="pt-2 text-xs">{t.common.typicalResponse}</li>
             </ul>
           </div>
         </div>
         <div className="accent-rule mt-12" />
         <div className="mt-8 flex flex-col items-center justify-between gap-4 text-sm text-muted-foreground sm:flex-row">
           <p>
-            © {year} {site.company_name}. All rights reserved.
+            © {year} {site.company_name}. {t.common.allRightsReserved}
           </p>
           <div className="flex items-center gap-6">
             <Link href="/privacy" className="transition-colors hover:text-foreground">
-              Privacy Policy
+              {t.common.privacyPolicy}
             </Link>
             <Link href="/terms" className="transition-colors hover:text-foreground">
-              Terms of Service
+              {t.common.termsOfService}
             </Link>
           </div>
         </div>
@@ -324,6 +361,7 @@ export function PublicLayout({ children }: { children: ReactNode }) {
       <Navbar />
       <main className="flex-1">{children}</main>
       <Footer />
+      <Chatbot />
     </div>
   )
 }

@@ -3,20 +3,22 @@ import { SectionHeading, Badge, Button, FullPageLoading, ErrorState, EmptyState 
 import { ServiceIcon } from '../components/cards'
 import { Link } from '../components/link'
 import { useApi, usePageMeta, useReveal } from '../lib/hooks'
+import { useLanguage } from '../lib/i18n'
 import { api, Service } from '../lib/api'
 import { ArrowRight, Check, Layers } from 'lucide-react'
 
 export default function ServicesPage() {
-  usePageMeta('Services — Hexocode', 'Website development, web applications, mobile apps, e-commerce, backend APIs and maintenance — built by Hexocode.')
+  const { t } = useLanguage()
+  usePageMeta(`${t.services.title} — Hexocode`, t.services.description)
   const { data, loading, error, refetch } = useApi<{ services: Service[] }>(() => api.get('/api/public/services'))
   const ctaRef = useReveal<HTMLDivElement>()
 
   return (
     <PublicLayout>
       <PageHero
-        eyebrow="What we do"
-        title="Services"
-        description="Every service below is delivered directly by the two of us — designed, built and supported without handoffs."
+        eyebrow={t.common.whatWeDo}
+        title={t.services.title}
+        description={t.services.description}
       />
 
       <section className="py-16">
@@ -26,7 +28,7 @@ export default function ServicesPage() {
           ) : error ? (
             <ErrorState message={error} onRetry={refetch} />
           ) : !data || data.services.length === 0 ? (
-            <EmptyState icon={<Layers className="h-10 w-10" />} title="No services published yet" description="Check back soon." />
+            <EmptyState icon={<Layers className="h-10 w-10" />} title={t.services.noServices} description={t.services.noServicesDesc} />
           ) : (
             <div className="space-y-8">
               {data.services.map((s, i) => (
@@ -49,9 +51,9 @@ export default function ServicesPage() {
                       <p className="mt-5 leading-relaxed text-muted-foreground">{s.description || s.short_description}</p>
                       {s.technologies.length > 0 && (
                         <div className="mt-5 flex flex-wrap gap-2">
-                          {s.technologies.map((t) => (
-                            <Badge key={t} variant="muted">
-                              {t}
+                          {s.technologies.map((tech) => (
+                            <Badge key={tech} variant="muted">
+                              {tech}
                             </Badge>
                           ))}
                         </div>
@@ -59,7 +61,7 @@ export default function ServicesPage() {
                     </div>
                     {s.features.length > 0 && (
                       <div className="glass rounded-2xl p-6">
-                        <h3 className="mb-4 font-mono text-xs font-semibold uppercase tracking-[0.18em] text-gold">What's included</h3>
+                        <h3 className="mb-4 font-mono text-xs font-semibold uppercase tracking-[0.18em] text-gold">{t.services.whatsIncluded}</h3>
                         <ul className="space-y-2.5">
                           {s.features.map((f, fi) => (
                             <li key={fi} className="flex items-start gap-2.5 text-sm text-muted-foreground">
@@ -74,7 +76,7 @@ export default function ServicesPage() {
                   <div className="mt-8 border-t border-border pt-6">
                     <Link href={`/contact?service=${s.slug}`}>
                       <Button variant={i % 2 === 0 ? 'gold' : 'outline'}>
-                        Discuss this service
+                        {t.common.discussService}
                         <ArrowRight className="h-4 w-4" />
                       </Button>
                     </Link>
@@ -90,10 +92,10 @@ export default function ServicesPage() {
                 className="hex-clip-v absolute -left-12 -top-12 h-40 w-40 opacity-15"
                 style={{ background: 'var(--gradient-brand)' }}
               />
-              <SectionHeading title="Not sure which service fits?" description="Describe what you're trying to achieve — we'll recommend the simplest approach that gets you there." />
+              <SectionHeading title={t.services.notSureTitle} description={t.services.notSureDesc} />
               <Link href="/contact">
                 <Button variant="gold" size="lg">
-                  Start a Conversation
+                  {t.common.startConversation}
                   <ArrowRight className="h-5 w-5" />
                 </Button>
               </Link>

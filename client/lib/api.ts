@@ -8,23 +8,55 @@ export class ApiError extends Error {
   }
 }
 
+const CACHE_TTL = 1000 * 60 * 5 // 5 minutes
+const cache = new Map<string, { data: unknown; expires: number }>()
+const pending = new Map<string, Promise<unknown>>()
+
 async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
-  const res = await fetch(path, {
-    credentials: 'same-origin',
-    headers: options.body instanceof FormData ? undefined : { 'Content-Type': 'application/json' },
-    ...options,
-  })
-  let data: unknown = null
-  try {
-    data = await res.json()
-  } catch {
-    /* non-JSON */
+  const isGet = !options.method || options.method === 'GET'
+
+  if (isGet) {
+    const cached = cache.get(path)
+    if (cached && cached.expires > Date.now()) {
+      return cached.data as T
+    }
+
+    if (pending.has(path)) {
+      return pending.get(path) as Promise<T>
+    }
   }
-  if (!res.ok) {
-    const msg = (data as { error?: string } | null)?.error || `Request failed (${res.status})`
-    throw new ApiError(msg, res.status)
+
+  const promise = (async () => {
+    const res = await fetch(path, {
+      credentials: 'same-origin',
+      headers: options.body instanceof FormData ? undefined : { 'Content-Type': 'application/json' },
+      ...options,
+    })
+    let data: unknown = null
+    try {
+      data = await res.json()
+    } catch {
+      /* non-JSON */
+    }
+    if (!res.ok) {
+      const msg = (data as { error?: string } | null)?.error || `Request failed (${res.status})`
+      throw new ApiError(msg, res.status)
+    }
+    return data
+  })()
+
+  if (isGet) {
+    pending.set(path, promise)
+    try {
+      const data = await promise
+      cache.set(path, { data, expires: Date.now() + CACHE_TTL })
+      return data as T
+    } finally {
+      pending.delete(path)
+    }
   }
-  return data as T
+
+  return promise as Promise<T>
 }
 
 export const api = {

@@ -3,13 +3,15 @@ import { PublicLayout, PageHero } from '../components/layout'
 import { Input, Select, Pagination, FullPageLoading, ErrorState, EmptyState, Skeleton, Card } from '../components/ui'
 import { ProjectCard } from '../components/cards'
 import { useApi, useDebounced, usePageMeta } from '../lib/hooks'
+import { useLanguage } from '../lib/i18n'
 import { api, Project, Category } from '../lib/api'
 import { Search, FolderOpen } from 'lucide-react'
 
 type ProjectsResponse = { projects: Project[]; total: number; page: number; per_page: number }
 
 export default function ProjectsPage() {
-  usePageMeta('Projects — Hexocode', 'Explore websites, web applications, mobile apps and custom systems built by Hexocode.')
+  const { t } = useLanguage()
+  usePageMeta(`${t.projects.title} — Hexocode`, t.projects.description)
   const [q, setQ] = useState('')
   const [category, setCategory] = useState('')
   const [technology, setTechnology] = useState('')
@@ -32,7 +34,7 @@ export default function ProjectsPage() {
 
   const allTechnologies = useMemo(() => {
     const set = new Set<string>()
-    data?.projects.forEach((p) => p.technologies.forEach((t) => set.add(t)))
+    data?.projects.forEach((p) => p.technologies.forEach((tItem) => set.add(tItem)))
     return Array.from(set).sort()
   }, [data])
 
@@ -41,9 +43,9 @@ export default function ProjectsPage() {
   return (
     <PublicLayout>
       <PageHero
-        eyebrow="Our work"
-        title="Projects"
-        description="A selection of systems we've designed, built and shipped. Filter by category or technology to find work similar to what you have in mind."
+        eyebrow={t.home.selectedWork}
+        title={t.projects.title}
+        description={t.projects.description}
       />
 
       <section className="py-14">
@@ -58,9 +60,9 @@ export default function ProjectsPage() {
                   setQ(e.target.value)
                   resetPage()
                 }}
-                placeholder="Search projects, clients…"
+                placeholder={t.projects.searchPlaceholder}
                 className="pl-9"
-                aria-label="Search projects"
+                aria-label={t.projects.searchPlaceholder}
               />
             </div>
             <Select
@@ -71,7 +73,7 @@ export default function ProjectsPage() {
               }}
               aria-label="Filter by category"
             >
-              <option value="">All categories</option>
+              <option value="">{t.projects.allCategories}</option>
               {(catData?.categories ?? []).map((c) => (
                 <option key={c.id} value={c.name}>
                   {c.name}
@@ -86,10 +88,10 @@ export default function ProjectsPage() {
               }}
               aria-label="Filter by technology"
             >
-              <option value="">All technologies</option>
-              {allTechnologies.map((t) => (
-                <option key={t} value={t}>
-                  {t}
+              <option value="">{t.projects.allTechnologies}</option>
+              {allTechnologies.map((tItem) => (
+                <option key={tItem} value={tItem}>
+                  {tItem}
                 </option>
               ))}
             </Select>
@@ -114,13 +116,13 @@ export default function ProjectsPage() {
           ) : !data || data.projects.length === 0 ? (
             <EmptyState
               icon={<FolderOpen className="h-10 w-10" />}
-              title="No projects found"
-              description="Try a different search term or clear the filters."
+              title={t.projects.noProjectsFound}
+              description={t.projects.noProjectsDesc}
             />
           ) : (
             <>
               <p className="mb-6 text-sm text-muted-foreground">
-                {data.total} {data.total === 1 ? 'project' : 'projects'}
+                {data.total} {data.total === 1 ? t.projects.projectCountSingular : t.projects.projectCountPlural}
               </p>
               <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                 {data.projects.map((p) => (

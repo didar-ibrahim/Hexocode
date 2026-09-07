@@ -1,14 +1,16 @@
 import { PublicLayout, PageHero } from '../components/layout'
 import { usePageMeta } from '../lib/hooks'
+import { useLanguage } from '../lib/i18n'
 import { useSite } from '../lib/site'
 
 function LegalLayout({ eyebrow, title, children }: { eyebrow: string; title: string; children: React.ReactNode }) {
+  const { t } = useLanguage()
   return (
     <PublicLayout>
       <PageHero
         eyebrow={eyebrow}
         title={title}
-        description={<p className="text-sm">Last updated: August 2026</p>}
+        description={<p className="text-sm">{t.legal.lastUpdated}</p>}
       />
       <section className="py-14">
         <div className="prose-hexo mx-auto max-w-3xl space-y-8 px-4 sm:px-6">{children}</div>
@@ -27,86 +29,59 @@ function Block({ title, children }: { title: string; children: React.ReactNode }
 }
 
 export function PrivacyPage() {
-  usePageMeta('Privacy Policy — Hexocode')
+  const { t } = useLanguage()
+  usePageMeta(`${t.legal.privacy.title} — Hexocode`)
   const site = useSite()
+  const p = t.legal.privacy
+
   return (
-    <LegalLayout eyebrow="Legal" title="Privacy Policy">
-      <Block title="Overview">
-        <p>
-          This privacy policy explains what information {site.company_name} ("we", "us") collects when you use this website, why we collect it, and how
-          it is handled. This is a general template intended to be reviewed and adapted before production use.
-        </p>
+    <LegalLayout eyebrow="Legal" title={p.title}>
+      <Block title={p.overviewTitle}>
+        <p>{p.overviewText}</p>
       </Block>
-      <Block title="Information we collect">
-        <p>
-          When you submit our contact form we collect the details you provide: your name, email address, optional phone number, company, and your
-          message. We also process standard technical metadata (such as an anonymized network identifier) solely to prevent spam and abuse.
-        </p>
+      <Block title={p.infoTitle}>
+        <p>{p.infoText}</p>
       </Block>
-      <Block title="How we use information">
-        <p>
-          We use contact details only to respond to your enquiry and, if a project follows, to communicate about that work. We do not sell, rent, or
-          share your personal information with third parties for their marketing purposes.
-        </p>
+      <Block title={p.useTitle}>
+        <p>{p.useText}</p>
       </Block>
-      <Block title="Data retention">
-        <p>
-          Contact messages are retained for as long as needed to handle your enquiry and any resulting project. You may request deletion of your
-          messages at any time by emailing {site.email || 'us'}.
-        </p>
+      <Block title={p.retentionTitle}>
+        <p>{p.retentionText}</p>
       </Block>
-      <Block title="Cookies">
-        <p>
-          This website uses only strictly necessary storage (for example, remembering your light/dark theme preference). The public site does not use
-          advertising or third-party tracking cookies.
-        </p>
+      <Block title={p.cookiesTitle}>
+        <p>{p.cookiesText}</p>
       </Block>
-      <Block title="Contact">
-        <p>
-          Questions about this policy can be sent to {site.email || 'our contact email'}. We aim to respond within two business days.
-        </p>
+      <Block title={p.contactTitle}>
+        <p>{p.contactText}</p>
       </Block>
     </LegalLayout>
   )
 }
 
 export function TermsPage() {
-  usePageMeta('Terms of Service — Hexocode')
-  const site = useSite()
+  const { t } = useLanguage()
+  usePageMeta(`${t.legal.terms.title} — Hexocode`)
+  const term = t.legal.terms
+
   return (
-    <LegalLayout eyebrow="Legal" title="Terms of Service">
-      <Block title="Overview">
-        <p>
-          These terms govern the use of the {site.company_name} website. They are a general template intended to be reviewed and adapted before
-          production use, and do not constitute legal advice.
-        </p>
+    <LegalLayout eyebrow="Legal" title={term.title}>
+      <Block title={term.overviewTitle}>
+        <p>{term.overviewText}</p>
       </Block>
-      <Block title="Website content">
-        <p>
-          The content on this website — including project descriptions, service descriptions and pricing packages — is provided for general
-          information. Quotes and timelines become binding only through a written proposal agreed by both parties.
-        </p>
+      <Block title={term.contentTitle}>
+        <p>{term.contentText}</p>
       </Block>
-      <Block title="Intellectual property">
-        <p>
-          The Hexocode name, logo and website design are the property of {site.company_name}. Case studies are shared with client permission; project
-          specifics may be generalized to respect confidentiality.
-        </p>
+      <Block title={term.ipTitle}>
+        <p>{term.ipText}</p>
       </Block>
-      <Block title="Acceptable use">
-        <p>
-          You agree not to misuse this website, including attempting to gain unauthorized access, submitting false or malicious content through forms,
-          or disrupting the service.
-        </p>
+      <Block title={term.useTitle}>
+        <p>{term.useText}</p>
       </Block>
-      <Block title="Liability">
-        <p>
-          This website is provided "as is". To the extent permitted by applicable law, we are not liable for indirect or consequential damages arising
-          from use of this website.
-        </p>
+      <Block title={term.liabilityTitle}>
+        <p>{term.liabilityText}</p>
       </Block>
-      <Block title="Contact">
-        <p>Questions about these terms can be sent to {site.email || 'our contact email'}.</p>
+      <Block title={term.contactTitle}>
+        <p>{term.contactText}</p>
       </Block>
     </LegalLayout>
   )

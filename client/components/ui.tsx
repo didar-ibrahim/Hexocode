@@ -115,7 +115,7 @@ export function Select({ className, children, value, onChange, placeholder = 'Se
         onClick={() => setOpen((prev) => !prev)}
         aria-expanded={open}
         aria-haspopup="listbox"
-        {...props}
+        {...(props as any)}
       >
         <span className={cn('truncate', !value && 'text-muted-foreground')}>{selectedLabel}</span>
         <ChevronDown className={cn('h-4 w-4 shrink-0 text-gold transition-transform duration-200', open && 'rotate-180')} />

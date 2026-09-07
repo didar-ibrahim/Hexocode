@@ -4,6 +4,7 @@ import { Badge, Button, FullPageLoading, EmptyState } from '../components/ui'
 import { ProjectCard } from '../components/cards'
 import { Link } from '../components/link'
 import { useApi, usePageMeta } from '../lib/hooks'
+import { useLanguage } from '../lib/i18n'
 import { api, Project } from '../lib/api'
 import {
   ArrowLeft, ArrowRight, ExternalLink, Github, Building2, Briefcase, Calendar,
@@ -32,6 +33,7 @@ function Section({ icon: Icon, title, children }: { icon: typeof Target; title: 
 }
 
 export default function ProjectDetailPage({ slug }: { slug: string }) {
+  const { t } = useLanguage()
   const { data, loading, error } = useApi<DetailResponse>(() => api.get(`/api/public/projects/${encodeURIComponent(slug)}`), [slug])
   const [lightbox, setLightbox] = useState<number | null>(null)
 
@@ -48,11 +50,11 @@ export default function ProjectDetailPage({ slug }: { slug: string }) {
         <div className="mx-auto max-w-3xl px-4 py-24">
           <EmptyState
             icon={<AlertTriangle className="h-10 w-10" />}
-            title="Project not found"
-            description="This project doesn't exist or hasn't been published yet."
+            title={t.projectDetail.notFoundTitle}
+            description={t.projectDetail.notFoundDesc}
             action={
               <Link href="/projects">
-                <Button variant="outline">Browse all projects</Button>
+                <Button variant="outline">{t.projectDetail.browseAll}</Button>
               </Link>
             }
           />
@@ -70,12 +72,12 @@ export default function ProjectDetailPage({ slug }: { slug: string }) {
         <div className="relative mx-auto max-w-7xl px-4 pb-14 pt-28 sm:px-6 lg:px-8">
           <Link href="/projects" className="mb-8 inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground">
             <ArrowLeft className="h-4 w-4" />
-            All projects
+            {t.projectDetail.allProjects}
           </Link>
           <div className="flex flex-wrap items-center gap-3">
             <Badge variant="gold">{p.category}</Badge>
             <Badge variant="outline">{p.status}</Badge>
-            {p.featured === 1 && <Badge variant="muted">Featured</Badge>}
+            {p.featured === 1 && <Badge variant="muted">{t.common.featured}</Badge>}
           </div>
           <h1 className="mt-4 text-balance font-heading text-4xl font-bold tracking-tight md:text-5xl">{p.title}</h1>
           <p className="mt-4 max-w-3xl text-lg leading-relaxed text-muted-foreground">{p.short_description}</p>
@@ -85,7 +87,7 @@ export default function ProjectDetailPage({ slug }: { slug: string }) {
               <div className="glass flex items-center gap-3 px-4 py-3">
                 <Building2 className="h-5 w-5 shrink-0 text-gold" />
                 <div>
-                  <p className="text-xs text-muted-foreground">Client</p>
+                  <p className="text-xs text-muted-foreground">{t.common.client}</p>
                   <p className="text-sm font-medium">{p.company_name}</p>
                 </div>
               </div>
@@ -94,7 +96,7 @@ export default function ProjectDetailPage({ slug }: { slug: string }) {
               <div className="glass flex items-center gap-3 px-4 py-3">
                 <Briefcase className="h-5 w-5 shrink-0 text-gold" />
                 <div>
-                  <p className="text-xs text-muted-foreground">Industry</p>
+                  <p className="text-xs text-muted-foreground">{t.common.industry}</p>
                   <p className="text-sm font-medium">{p.industry}</p>
                 </div>
               </div>
@@ -103,7 +105,7 @@ export default function ProjectDetailPage({ slug }: { slug: string }) {
               <div className="glass flex items-center gap-3 px-4 py-3">
                 <Clock className="h-5 w-5 shrink-0 text-gold" />
                 <div>
-                  <p className="text-xs text-muted-foreground">Duration</p>
+                  <p className="text-xs text-muted-foreground">{t.common.duration}</p>
                   <p className="text-sm font-medium">{p.duration}</p>
                 </div>
               </div>
@@ -112,7 +114,7 @@ export default function ProjectDetailPage({ slug }: { slug: string }) {
               <div className="glass flex items-center gap-3 px-4 py-3">
                 <Calendar className="h-5 w-5 shrink-0 text-gold" />
                 <div>
-                  <p className="text-xs text-muted-foreground">Timeline</p>
+                  <p className="text-xs text-muted-foreground">{t.common.timeline}</p>
                   <p className="text-sm font-medium">
                     {p.start_date}
                     {p.end_date ? ` → ${p.end_date}` : ''}
@@ -127,7 +129,7 @@ export default function ProjectDetailPage({ slug }: { slug: string }) {
               {p.live_url && (
                 <a href={p.live_url} target="_blank" rel="noopener noreferrer">
                   <Button variant="gold">
-                    Visit live site
+                    {t.common.visitLive}
                     <ExternalLink className="h-4 w-4" />
                   </Button>
                 </a>
@@ -136,7 +138,7 @@ export default function ProjectDetailPage({ slug }: { slug: string }) {
                 <a href={p.github_url} target="_blank" rel="noopener noreferrer">
                   <Button variant="outline">
                     <Github className="h-4 w-4" />
-                    View code
+                    {t.common.viewCode}
                   </Button>
                 </a>
               )}
@@ -178,17 +180,17 @@ export default function ProjectDetailPage({ slug }: { slug: string }) {
               </div>
             )}
             {p.problem && (
-              <Section icon={Target} title="The problem">
+              <Section icon={Target} title={t.common.problem}>
                 <p className="text-sm leading-relaxed text-muted-foreground">{p.problem}</p>
               </Section>
             )}
             {p.solution && (
-              <Section icon={Lightbulb} title="Our solution">
+              <Section icon={Lightbulb} title={t.common.solution}>
                 <p className="text-sm leading-relaxed text-muted-foreground">{p.solution}</p>
               </Section>
             )}
             {p.features.length > 0 && (
-              <Section icon={Layers} title="Key features">
+              <Section icon={Layers} title={t.common.keyFeatures}>
                 <ul className="grid gap-2.5 sm:grid-cols-2">
                   {p.features.map((f, i) => (
                     <li key={i} className="flex items-start gap-2.5 text-sm text-muted-foreground">
@@ -200,12 +202,12 @@ export default function ProjectDetailPage({ slug }: { slug: string }) {
               </Section>
             )}
             {p.challenges && (
-              <Section icon={AlertTriangle} title="Challenges">
+              <Section icon={AlertTriangle} title={t.common.challenges}>
                 <p className="text-sm leading-relaxed text-muted-foreground">{p.challenges}</p>
               </Section>
             )}
             {p.results && (
-              <Section icon={TrendingUp} title="Results">
+              <Section icon={TrendingUp} title={t.common.results}>
                 <p className="text-sm leading-relaxed text-muted-foreground">{p.results}</p>
               </Section>
             )}
@@ -215,11 +217,11 @@ export default function ProjectDetailPage({ slug }: { slug: string }) {
           <aside className="space-y-6 lg:sticky lg:top-24 lg:self-start">
             {p.technologies.length > 0 && (
               <div className="glass rounded-2xl p-6">
-                <h3 className="mb-4 font-mono text-xs font-semibold uppercase tracking-[0.18em] text-gold">Technologies</h3>
+                <h3 className="mb-4 font-mono text-xs font-semibold uppercase tracking-[0.18em] text-gold">{t.common.technologies}</h3>
                 <div className="flex flex-wrap gap-2">
-                  {p.technologies.map((t) => (
-                    <Badge key={t} variant="muted">
-                      {t}
+                  {p.technologies.map((tItem) => (
+                    <Badge key={tItem} variant="muted">
+                      {tItem}
                     </Badge>
                   ))}
                 </div>
@@ -227,11 +229,11 @@ export default function ProjectDetailPage({ slug }: { slug: string }) {
             )}
             {p.tags.length > 0 && (
               <div className="glass rounded-2xl p-6">
-                <h3 className="mb-4 font-mono text-xs font-semibold uppercase tracking-[0.18em] text-gold">Tags</h3>
+                <h3 className="mb-4 font-mono text-xs font-semibold uppercase tracking-[0.18em] text-gold">{t.common.tags}</h3>
                 <div className="flex flex-wrap gap-2">
-                  {p.tags.map((t) => (
-                    <Badge key={t} variant="outline">
-                      #{t}
+                  {p.tags.map((tItem) => (
+                    <Badge key={tItem} variant="outline">
+                      #{tItem}
                     </Badge>
                   ))}
                 </div>
@@ -242,10 +244,10 @@ export default function ProjectDetailPage({ slug }: { slug: string }) {
                 className="hex-clip-v absolute -right-8 -top-8 h-24 w-24 opacity-15"
                 style={{ background: 'var(--gradient-accent)' }}
               />
-              <h3 className="relative font-heading text-lg font-semibold">Need something similar?</h3>
-              <p className="relative mt-2 text-sm text-muted-foreground">Tell us about your project — we'll reply within 24 hours.</p>
+              <h3 className="relative font-heading text-lg font-semibold">{t.projectDetail.needSimilarTitle}</h3>
+              <p className="relative mt-2 text-sm text-muted-foreground">{t.projectDetail.needSimilarDesc}</p>
               <HexCta href="/contact" className="relative mt-4 w-full">
-                Start a Project
+                {t.common.startProject}
                 <ArrowRight className="h-4 w-4" />
               </HexCta>
             </div>
@@ -255,7 +257,7 @@ export default function ProjectDetailPage({ slug }: { slug: string }) {
         {/* Related */}
         {data.related.length > 0 && (
           <div className="mt-20">
-            <h2 className="mb-8 font-heading text-2xl font-bold">Related projects</h2>
+            <h2 className="mb-8 font-heading text-2xl font-bold">{t.common.relatedProjects}</h2>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {data.related.map((r) => (
                 <ProjectCard key={r.id} project={r} />
