@@ -23,7 +23,6 @@ export default function HomePage() {
   const { t } = useLanguage()
   usePageMeta('Hexocode', t.home.heroDesc)
 
-  const settings = { tagline: '' }
   const projects: Project[] = []
   const services: Service[] = []
   const packages: Package[] = []
@@ -37,6 +36,8 @@ export default function HomePage() {
     { Icon: Gauge, label: t.home.capabilities.customDev },
   ]
 
+  const marqueeItems = ['Websites', 'Web Apps', 'Mobile', ...capabilitiesList.map((capability) => capability.label)]
+  const reduceMotion = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
   const ROTATING = t.home.rotating
   const [wordIndex, setWordIndex] = useState(0)
   const [tilt, setTilt] = useState({ x: 0, y: 0 })
@@ -48,18 +49,27 @@ export default function HomePage() {
   }, [ROTATING.length])
 
   useEffect(() => {
+    if (reduceMotion) return
+
+    let frame = 0
     const onMove = (e: PointerEvent) => {
       const el = stageRef.current
       if (!el) return
-      const r = el.getBoundingClientRect()
-      setTilt({
-        x: ((e.clientY - (r.top + r.height / 2)) / r.height) * -16,
-        y: ((e.clientX - (r.left + r.width / 2)) / r.width) * 16,
+      frame = window.requestAnimationFrame(() => {
+        const r = el.getBoundingClientRect()
+        setTilt({
+          x: ((e.clientY - (r.top + r.height / 2)) / r.height) * -16,
+          y: ((e.clientX - (r.left + r.width / 2)) / r.width) * 16,
+        })
       })
     }
+
     window.addEventListener('pointermove', onMove)
-    return () => window.removeEventListener('pointermove', onMove)
-  }, [])
+    return () => {
+      window.cancelAnimationFrame(frame)
+      window.removeEventListener('pointermove', onMove)
+    }
+  }, [reduceMotion])
 
   return (
     <PublicLayout>
@@ -137,7 +147,6 @@ export default function HomePage() {
               <span className="inline-block mt-2">{t.home.heroTail}</span>
             </h1>
             <p className="anim-rise mx-auto mt-6 max-w-3xl text-sm leading-relaxed text-muted-foreground sm:text-base" style={{ animationDelay: '0.35s' }}>
-              {settings?.tagline ? `${settings.tagline} ` : ''}
               {t.home.heroDesc}
             </p>
             <div className="anim-rise mt-9 flex flex-wrap items-center justify-center gap-4" style={{ animationDelay: '0.5s' }}>
@@ -166,7 +175,7 @@ export default function HomePage() {
           <div className="anim-marquee flex w-max gap-10 font-mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
             {Array.from({ length: 2 }).map((_, r) => (
               <span key={r} className="flex items-center gap-5">
-                {['Websites', 'Web Apps', 'Mobile', ...capabilitiesList.map((c) => c.label)].map((tItem, index, arr) => (
+                {marqueeItems.map((tItem, index, arr) => (
                   <span key={`${r}-${tItem}`} className="flex items-center gap-5">
                     <span>{tItem}</span>
                     {index < arr.length - 1 && (

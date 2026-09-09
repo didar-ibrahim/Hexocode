@@ -15,6 +15,7 @@ export function HexField({ className = '' }: { className?: string }) {
 
     const styles = getComputedStyle(document.documentElement)
     const readToken = (name: string, fallback: string) => styles.getPropertyValue(name).trim() || fallback
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
     let line = readToken('--brand-primary-2', '#285B43')
     let accent = readToken('--brand-accent', '#B7A35A')
@@ -46,6 +47,25 @@ export function HexField({ className = '' }: { className?: string }) {
         i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y)
       }
       ctx.closePath()
+    }
+
+    const drawStatic = () => {
+      ctx.clearRect(0, 0, w, h)
+      const stepX = R * 1.732
+      const stepY = R * 1.5
+      for (let row = -1; row * stepY < h + R; row++) {
+        for (let col = -1; col * stepX < w + R; col++) {
+          const cx = col * stepX + (row % 2 ? stepX / 2 : 0)
+          const cy = row * stepY
+          const r = R * 0.72
+          hex(cx, cy, r)
+          ctx.lineWidth = 1
+          ctx.globalAlpha = 0.14
+          ctx.strokeStyle = line
+          ctx.stroke()
+        }
+      }
+      ctx.globalAlpha = 1
     }
 
     const draw = (t: number) => {
@@ -91,6 +111,13 @@ export function HexField({ className = '' }: { className?: string }) {
     }
 
     resize()
+    if (reduceMotion) {
+      drawStatic()
+      return () => {
+        cancelAnimationFrame(raf)
+      }
+    }
+
     raf = requestAnimationFrame(draw)
     window.addEventListener('resize', resize)
     window.addEventListener('pointermove', onMove)

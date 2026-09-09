@@ -1,23 +1,23 @@
 // Hexocode SPA entry — mounts React, wires providers and the tiny history router.
-import React from 'react'
+import React, { Suspense } from 'react'
 import { createRoot } from 'react-dom/client'
 import './styles.css'
 
 import { usePath } from './lib/router'
 import { SiteProvider } from './lib/site'
-import { AuthProvider } from './lib/auth'
 import { Toaster } from './components/ui'
 import { Link } from './components/link'
 import { HexField } from './components/HexField'
 
-import HomePage from './pages/home'
-import ProjectsPage from './pages/projects'
-import ProjectDetailPage from './pages/project-detail'
-import ServicesPage from './pages/services'
-import PackagesPage from './pages/packages'
-import AboutPage from './pages/about'
-import ContactPage from './pages/contact'
-import { PrivacyPage, TermsPage } from './pages/legal'
+const HomePage = React.lazy(() => import('./pages/home'))
+const ProjectsPage = React.lazy(() => import('./pages/projects'))
+const ProjectDetailPage = React.lazy(() => import('./pages/project-detail'))
+const ServicesPage = React.lazy(() => import('./pages/services'))
+const PackagesPage = React.lazy(() => import('./pages/packages'))
+const AboutPage = React.lazy(() => import('./pages/about'))
+const ContactPage = React.lazy(() => import('./pages/contact'))
+const PrivacyPage = React.lazy(() => import('./pages/legal').then((module) => ({ default: module.PrivacyPage })))
+const TermsPage = React.lazy(() => import('./pages/legal').then((module) => ({ default: module.TermsPage })))
 
 import { LanguageProvider, useLanguage } from './lib/i18n'
 
@@ -64,10 +64,10 @@ function App() {
   return (
     <LanguageProvider>
       <SiteProvider>
-        <AuthProvider>
+        <Suspense fallback={<div className="min-h-screen" />}>
           <Router />
-          <Toaster />
-        </AuthProvider>
+        </Suspense>
+        <Toaster />
       </SiteProvider>
     </LanguageProvider>
   )
