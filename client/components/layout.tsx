@@ -19,7 +19,7 @@ function LanguageToggle() {
       onClick={() => setLang(lang === 'en' ? 'fr' : 'en')}
       aria-label={lang === 'en' ? 'Passer en français' : 'Switch to English'}
       title={lang === 'en' ? 'Passer en français' : 'Switch to English'}
-      className="glass hex-clip-v group relative grid h-11 px-3 font-mono text-[11px] font-bold uppercase tracking-wider place-items-center transition-transform duration-300 hover:scale-105"
+      className="glass hex-clip-v group relative grid h-11 border border-foreground/20 bg-white/70 px-3 font-mono text-[11px] font-bold uppercase tracking-wider shadow-md transition-all duration-300 hover:scale-105 hover:border-gold/60 hover:shadow-[0_4px_18px_rgba(23,61,45,0.18)] dark:bg-primary/30"
     >
       <span
         className="absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
@@ -39,7 +39,7 @@ function ThemeToggle() {
     <button
       onClick={toggle}
       aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
-      className="glass hex-clip-v group relative grid h-11 w-10 place-items-center transition-transform duration-300 hover:scale-110"
+      className="glass hex-clip-v group relative grid h-11 w-10 border border-foreground/20 bg-white/70 place-items-center shadow-md transition-all duration-300 hover:scale-110 hover:border-gold/60 hover:shadow-[0_4px_18px_rgba(23,61,45,0.18)] dark:bg-primary/30"
     >
       <span
         className="absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
@@ -100,7 +100,7 @@ export function Navbar() {
   const path = usePath()
   const [open, setOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
-  const { t } = useLanguage()
+  const { t, lang } = useLanguage()
 
   const navItems = [
     { href: '/', label: t.nav.home },
@@ -128,8 +128,10 @@ export function Navbar() {
           scrolled || open ? 'glass-strong' : 'border border-transparent'
         )}
       >
-        <BrandMark />
-        <ul className="hidden flex-1 items-center justify-center gap-1 md:flex lg:gap-4">
+        <div className={cn(lang === 'fr' && 'md:-ml-2')}>
+          <BrandMark />
+        </div>
+        <ul className="hidden flex-1 items-center justify-center gap-1 md:ml-4 md:flex lg:gap-4">
           {navItems.map((item) => {
             const active = item.href === '/' ? path === '/' : path.startsWith(item.href)
             return (
@@ -137,7 +139,7 @@ export function Navbar() {
                 <Link
                   href={item.href}
                   className={cn(
-                    'relative block px-2 py-2 font-mono text-[10px] uppercase tracking-[0.15em] transition-colors lg:px-4 lg:text-[11px] lg:tracking-[0.22em]',
+                    'relative block whitespace-nowrap px-2 py-2 font-mono text-[10px] uppercase tracking-[0.15em] transition-colors lg:px-4 lg:text-[11px] lg:tracking-[0.22em]',
                     active ? 'text-gold' : 'text-muted-foreground hover:text-foreground'
                   )}
                   aria-current={active ? 'page' : undefined}
@@ -149,7 +151,7 @@ export function Navbar() {
           })}
         </ul>
         <div className="hidden items-center gap-2 md:flex">
-          <HexCta onClick={() => navigate('/contact')}>
+          <HexCta className="px-5 py-2 text-[10px]" onClick={() => navigate('/contact')}>
             {t.nav.startProject}
           </HexCta>
           <LanguageToggle />
@@ -162,14 +164,19 @@ export function Navbar() {
             onClick={() => setOpen(!open)}
             aria-label={open ? 'Close menu' : 'Open menu'}
             aria-expanded={open}
-            className="glass rounded-md p-2"
+            className="glass group relative grid h-11 w-11 place-items-center overflow-hidden rounded-xl border border-foreground/10 transition-all duration-300 hover:-translate-y-0.5 hover:border-gold/50 hover:shadow-[0_0_24px_rgba(183,163,90,0.2)] active:translate-y-0 active:scale-95"
           >
-            {open ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            <span
+              className="absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+              style={{ background: 'var(--gradient-accent)' }}
+            />
+            <Menu className={cn('relative h-6 w-6 text-gold transition-all duration-300', open ? 'rotate-90 scale-0 opacity-0' : 'rotate-0 scale-100 opacity-100')} />
+            <X className={cn('absolute h-6 w-6 text-gold transition-all duration-300', open ? 'rotate-0 scale-100 opacity-100' : '-rotate-90 scale-0 opacity-0')} />
           </button>
         </div>
       </nav>
       {open && (
-        <div className="glass-strong absolute inset-x-4 top-[4.5rem] rounded-2xl px-4 pb-6 pt-2 md:hidden animate-fade-in">
+        <div className="glass-strong absolute inset-x-4 top-[5.5rem] rounded-2xl px-4 pb-6 pt-2 md:hidden animate-fade-in">
           <nav aria-label="Mobile navigation">
             {navItems.map((item) => {
               const active = item.href === '/' ? path === '/' : path.startsWith(item.href)
@@ -186,7 +193,7 @@ export function Navbar() {
                 </Link>
               )
             })}
-            <HexCta className="mt-3 w-full" onClick={() => navigate('/contact')}>
+            <HexCta className="mt-3 w-full justify-center" onClick={() => navigate('/contact')}>
               {t.nav.startProject}
             </HexCta>
           </nav>

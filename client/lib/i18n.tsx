@@ -380,9 +380,9 @@ const dictionaries: Record<Language, Translations> = {
       needSimilarDesc: "Tell us about your project — we'll reply within 24 hours.",
     },
     about: {
-      title: 'Two developers who answer their own email.',
+      title: 'Engineering digital products built to move your business forward.',
       description:
-        'Hexocode is a two-developer software studio. We design and build websites, web applications, mobile apps and custom business systems for clients who want a technical partner, not just a vendor.',
+        'Hexocode is a software engineering studio focused on designing and building reliable websites, web applications, mobile experiences and custom business systems. We partner with organizations that value technical quality, clear communication and solutions built to last.',
       mission: 'Mission',
       missionDefault:
         'To give startups and growing businesses access to genuinely good software engineering — without agency overhead or opaque pricing.',
@@ -410,8 +410,8 @@ const dictionaries: Record<Language, Translations> = {
         },
       ],
       teamEyebrow: 'The team',
-      teamTitle: "The two people you'll actually work with",
-      teamDesc: 'No account managers, no handoffs — you talk to the people writing the code.',
+      teamTitle: 'The people behind your product',
+      teamDesc: 'Work directly with the professionals designing and building your solution — from initial strategy through launch and continued improvement.',
       toolboxEyebrow: 'Toolbox',
       toolboxTitle: 'Technologies we work with',
       toolboxDesc: 'Proven, current tools — chosen per project, not per trend.',
@@ -488,7 +488,7 @@ const dictionaries: Record<Language, Translations> = {
         pricing: 'How much does it cost?',
         pricingAnswer: 'Our pricing is fully transparent. We have fixed packages for standard projects, and we provide custom quotes for everything else. No hidden fees.',
         human: 'Can I talk to a human?',
-        humanAnswer: 'Of course! We are a two-person team and we answer our own emails. You can reach out via the contact form or email us directly, and we will reply within 24 hours.',
+        humanAnswer: 'Of course! You can reach our team directly through the contact form or by email, and we will reply within 24 hours.',
       },
     },
     legal: {
@@ -589,10 +589,10 @@ const dictionaries: Record<Language, Translations> = {
       footerServices: ['Création de sites web', 'Applications web', 'Applications mobiles', 'E-commerce', 'Backend & APIs', 'Maintenance'],
     },
     home: {
-      heroLead: 'Nous concevons des',
-      heroTail: 'pour les entreprises ambitieuses.',
+      heroLead: 'Nous créons',
+      heroTail: 'pour votre entreprise.',
       heroDesc: 'Hexocode conçoit et développe des plateformes web, applications mobiles, systèmes de design et logiciels sur mesure pour startups, commerces et entreprises en croissance — avec la clarté, la rapidité et l’exigence d’un travail d’artisan.',
-      rotating: ['plateformes web', 'apps mobiles', 'systèmes design', 'produits IA'],
+      rotating: ['plateformes web', 'apps mobiles', 'design', 'produits IA'],
       capabilities: {
         modernTech: 'Technologies Modernes',
         responsiveDesign: 'Design Responsive',
@@ -691,9 +691,9 @@ const dictionaries: Record<Language, Translations> = {
       needSimilarDesc: 'Parlez-nous de votre projet — nous vous répondons sous 24 heures.',
     },
     about: {
-      title: 'Deux développeurs qui répondent eux-mêmes à vos messages.',
+      title: 'Des produits numériques conçus pour faire progresser votre activité.',
       description:
-        'Hexocode est un studio de développement composé de deux ingénieurs. Nous créons des sites, des applications web et mobiles sur mesure pour ceux qui recherchent un véritable partenaire technique.',
+        'Hexocode est un studio d’ingénierie logicielle spécialisé dans la conception et le développement de sites fiables, d’applications web et mobiles ainsi que de systèmes métier sur mesure. Nous accompagnons les organisations qui privilégient la qualité technique, la clarté des échanges et des solutions durables.',
       mission: 'Mission',
       missionDefault:
         'Offrir aux startups et entreprises en croissance une ingénierie logicielle d’excellence — sans les frais généraux ni la complexité des agences.',
@@ -721,8 +721,8 @@ const dictionaries: Record<Language, Translations> = {
         },
       ],
       teamEyebrow: 'L’équipe',
-      teamTitle: 'Les deux personnes avec qui vous collaborerez',
-      teamDesc: 'Pas de commercial, pas de sous-traitance — vous échangez avec les créateurs du code.',
+      teamTitle: 'Les experts au service de votre projet',
+      teamDesc: 'Échangez directement avec les professionnels qui conçoivent et développent votre solution, de la stratégie initiale à son évolution.',
       toolboxEyebrow: 'Boîte à outils',
       toolboxTitle: 'Technologies maîtrisées',
       toolboxDesc: 'Des outils modernes et éprouvés — choisis selon les enjeux du projet.',
@@ -799,7 +799,7 @@ const dictionaries: Record<Language, Translations> = {
         pricing: 'Combien ça coûte ?',
         pricingAnswer: 'Notre tarification est totalement transparente. Nous avons des forfaits fixes pour les projets standards, et nous fournissons des devis sur mesure pour le reste. Aucun frais caché.',
         human: 'Puis-je parler à un humain ?',
-        humanAnswer: 'Bien sûr ! Nous sommes une équipe de deux personnes et nous répondons nous-mêmes à nos emails. Utilisez le formulaire de contact, nous répondrons sous 24 heures.',
+        humanAnswer: 'Bien sûr ! Vous pouvez contacter directement notre équipe via le formulaire de contact ou par email. Nous vous répondrons sous 24 heures.',
       },
     },
     legal: {

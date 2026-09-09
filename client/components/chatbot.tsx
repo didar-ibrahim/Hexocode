@@ -3,6 +3,7 @@ import { MessageCircle, X, Send, ChevronRight } from 'lucide-react'
 import { cn } from '../lib/utils'
 import { useLanguage } from '../lib/i18n'
 import { navigate } from '../lib/router'
+import { LOGO_URL } from './brand'
 
 type Message = {
   id: string
@@ -82,16 +83,16 @@ export function Chatbot() {
 
       <div
         className={cn(
-          'glass-strong fixed bottom-6 right-6 z-50 flex w-[360px] flex-col overflow-hidden rounded-2xl shadow-2xl transition-all duration-500 ease-out sm:max-w-[calc(100vw-3rem)]',
+          'glass-strong fixed bottom-6 right-6 z-50 flex h-[560px] w-[360px] max-w-[calc(100vw-3rem)] flex-col overflow-hidden rounded-2xl shadow-2xl transition-all duration-500 ease-out max-md:bottom-3 max-md:right-3 max-md:h-[min(500px,calc(100vh-5rem))] max-md:w-[calc(100vw-1.5rem)]',
           isOpen ? 'translate-y-0 opacity-100' : 'pointer-events-none translate-y-10 opacity-0'
         )}
-        style={{ maxHeight: 'calc(100vh - 5rem)', height: '560px' }}
+        style={{ maxHeight: 'calc(100vh - 5rem)' }}
       >
         {/* Header */}
         <div className="flex items-center justify-between border-b border-border/50 bg-black/20 px-5 py-4">
           <div className="flex items-center gap-3">
             <div className="relative flex h-10 w-10 items-center justify-center rounded-full bg-gold/10">
-              <span className="font-heading text-lg font-bold text-gold">H</span>
+              <img src={LOGO_URL} alt="" className="h-7 w-7 object-contain" />
               <span className="absolute bottom-0.5 right-0.5 h-2.5 w-2.5 rounded-full border-2 border-background bg-green-500" />
             </div>
             <div>
