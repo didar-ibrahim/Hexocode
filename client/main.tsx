@@ -19,17 +19,6 @@ import AboutPage from './pages/about'
 import ContactPage from './pages/contact'
 import { PrivacyPage, TermsPage } from './pages/legal'
 
-import AdminLoginPage from './pages/admin/login'
-import AdminDashboard from './pages/admin/dashboard'
-import { AdminProjectsList, AdminProjectEditor } from './pages/admin/projects'
-import { AdminServicesList, AdminServiceEditor } from './pages/admin/services'
-import { AdminPackagesList, AdminPackageEditor } from './pages/admin/packages'
-import { AdminTestimonialsList, AdminTestimonialEditor } from './pages/admin/testimonials'
-import AdminMessagesPage from './pages/admin/messages'
-import { AdminTeamList, AdminTeamEditor } from './pages/admin/team'
-import AdminSettingsPage from './pages/admin/settings'
-import AdminProfilePage from './pages/admin/profile'
-
 import { LanguageProvider, useLanguage } from './lib/i18n'
 
 function NotFoundPage() {
@@ -67,28 +56,7 @@ function Router() {
   if (path === '/privacy') return <PrivacyPage />
   if (path === '/terms') return <TermsPage />
 
-  // Admin
-  if (path === '/admin/login') return <AdminLoginPage />
-  if (path === '/admin') return <AdminDashboard />
-  if (path === '/admin/projects') return <AdminProjectsList />
-  const projectEdit = /^\/admin\/projects\/([^/]+)\/?$/.exec(path)
-  if (projectEdit) return <AdminProjectEditor id={decodeURIComponent(projectEdit[1])} />
-  if (path === '/admin/services') return <AdminServicesList />
-  const serviceEdit = /^\/admin\/services\/([^/]+)\/?$/.exec(path)
-  if (serviceEdit) return <AdminServiceEditor id={decodeURIComponent(serviceEdit[1])} />
-  if (path === '/admin/packages') return <AdminPackagesList />
-  const packageEdit = /^\/admin\/packages\/([^/]+)\/?$/.exec(path)
-  if (packageEdit) return <AdminPackageEditor id={decodeURIComponent(packageEdit[1])} />
-  if (path === '/admin/testimonials') return <AdminTestimonialsList />
-  const testimonialEdit = /^\/admin\/testimonials\/([^/]+)\/?$/.exec(path)
-  if (testimonialEdit) return <AdminTestimonialEditor id={decodeURIComponent(testimonialEdit[1])} />
-  if (path === '/admin/messages') return <AdminMessagesPage />
-  if (path === '/admin/team') return <AdminTeamList />
-  const teamEdit = /^\/admin\/team\/([^/]+)\/?$/.exec(path)
-  if (teamEdit) return <AdminTeamEditor id={decodeURIComponent(teamEdit[1])} />
-  if (path === '/admin/settings') return <AdminSettingsPage />
-  if (path === '/admin/profile') return <AdminProfilePage />
-
+  // Admin pages have been removed from this public bundle!
   return <NotFoundPage />
 }
 

@@ -129,7 +129,7 @@ export function Navbar() {
         )}
       >
         <BrandMark />
-        <ul className="ml-auto hidden items-center gap-1 md:flex" aria-label="Main navigation">
+        <ul className="hidden flex-1 items-center justify-center gap-1 md:flex lg:gap-4">
           {navItems.map((item) => {
             const active = item.href === '/' ? path === '/' : path.startsWith(item.href)
             return (
@@ -137,7 +137,7 @@ export function Navbar() {
                 <Link
                   href={item.href}
                   className={cn(
-                    'relative block px-4 py-2 font-mono text-[11px] uppercase tracking-[0.22em] transition-colors',
+                    'relative block px-2 py-2 font-mono text-[10px] uppercase tracking-[0.15em] transition-colors lg:px-4 lg:text-[11px] lg:tracking-[0.22em]',
                     active ? 'text-gold' : 'text-muted-foreground hover:text-foreground'
                   )}
                   aria-current={active ? 'page' : undefined}

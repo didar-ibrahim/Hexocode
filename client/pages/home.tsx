@@ -20,7 +20,7 @@ function Reveal({ children, delay = 0 }: { children: ReactNode; delay?: number }
 }
 
 export default function HomePage() {
-  const { t } = useLanguage()
+  const { t, lang } = useLanguage()
   usePageMeta('Hexocode', t.home.heroDesc)
 
   const settings = { tagline: '' }
@@ -111,9 +111,16 @@ export default function HomePage() {
           </div>
 
           <div className="relative z-10 mx-auto max-w-5xl text-center">
-            <h1 className="anim-rise mt-6 text-left font-display text-[clamp(3rem,7vw,8rem)] leading-[0.8] tracking-[-0.06em]" style={{ animationDelay: '0.2s' }}>
-              <span className="inline">{t.home.heroLead}</span>{' '}
-              <span className="relative mx-1 inline-block h-[0.92em] overflow-hidden align-middle">
+            <h1 
+              className={`anim-rise mt-6 text-left font-display leading-[1.1] tracking-[-0.04em] ${
+                lang === 'fr' ? 'text-[clamp(1.8rem,4vw,5rem)]' : 'text-[clamp(2.5rem,5.5vw,7.5rem)]'
+              }`} 
+              style={{ animationDelay: '0.2s' }}
+            >
+              <span className="inline-block whitespace-nowrap">{t.home.heroLead}</span>{' '}
+              <span className={`relative mx-1 inline-block h-[1em] overflow-hidden align-bottom ${
+                lang === 'fr' ? 'min-w-[200px]' : 'min-w-[280px]'
+              }`}>
                 {ROTATING.map((word, i) => (
                   <span
                     key={word}
@@ -128,7 +135,8 @@ export default function HomePage() {
                   </span>
                 ))}
               </span>
-              {' '}<span className="inline">{t.home.heroTail}</span>
+              <br className="hidden sm:block" />
+              <span className="inline-block mt-2">{t.home.heroTail}</span>
             </h1>
             <p className="anim-rise mx-auto mt-6 max-w-3xl text-sm leading-relaxed text-muted-foreground sm:text-base" style={{ animationDelay: '0.35s' }}>
               {settings?.tagline ? `${settings.tagline} ` : ''}

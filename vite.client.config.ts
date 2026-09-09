@@ -9,10 +9,13 @@ export default defineConfig({
     emptyOutDir: false,
     target: 'esnext',
     rollupOptions: {
-      input: 'index.html',
+      input: {
+        main: 'index.html',
+        admin: 'admin.html',
+      },
       output: {
-        entryFileNames: 'assets/app-[hash].js',
-        chunkFileNames: 'assets/chunk-[hash].js',
+        entryFileNames: 'assets/[name]-[hash].js',
+        chunkFileNames: 'assets/[name]-[hash].js',
         assetFileNames: 'assets/[name]-[hash][extname]',
       },
     },

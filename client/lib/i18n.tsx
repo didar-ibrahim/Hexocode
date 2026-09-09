@@ -591,8 +591,7 @@ const dictionaries: Record<Language, Translations> = {
     home: {
       heroLead: 'Nous concevons des',
       heroTail: 'pour les entreprises ambitieuses.',
-      heroDesc:
-        'Hexocode conçoit et développe des plateformes web, applications mobiles, systèmes de design et logiciels sur mesure pour startups, commerces et entreprises en croissance — avec la clarté, la rapidité et l’exigence d’un travail d’artisan.',
+      heroDesc: 'Hexocode conçoit et développe des plateformes web, applications mobiles, systèmes de design et logiciels sur mesure pour startups, commerces et entreprises en croissance — avec la clarté, la rapidité et l’exigence d’un travail d’artisan.',
       rotating: ['plateformes web', 'apps mobiles', 'systèmes design', 'produits IA'],
       capabilities: {
         modernTech: 'Technologies Modernes',
