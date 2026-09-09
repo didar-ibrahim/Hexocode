@@ -115,10 +115,10 @@ export function AdminLayout({ children, title }: { children: ReactNode; title: s
         <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-10">
           <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
             <h1 className="font-heading text-2xl font-bold tracking-tight">{title}</h1>
-            <Link href="/" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-gold">
+            <a href="/" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-gold">
               <ExternalLink className="h-4 w-4" />
               View public site
-            </Link>
+            </a>
           </div>
           {children}
         </div>
