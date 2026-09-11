@@ -62,7 +62,9 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
     }
   }
 
-  return promise as Promise<T>
+  const result = await promise as T
+  cache.clear()
+  return result
 }
 
 export const api = {

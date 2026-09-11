@@ -21,13 +21,21 @@ function toSlug(str: string): string {
     .slice(0, 80) || `item-${Date.now()}`
 }
 
-// Ensure slug exists on project/service/package payloads
-function ensureSlug(body: Record<string, any>): Record<string, any> {
-  if (!body.slug && body.title) return { ...body, slug: toSlug(body.title) }
-  if (!body.slug && body.name) return { ...body, slug: toSlug(body.name) }
-  return body
-}
+async function ensureUniqueSlug(table: string, body: Record<string, any>, currentId?: number): Promise<Record<string, any>> {
+  const source = (body.title ?? body.name ?? '').toString()
+  const base = (body.slug ?? '').trim() || toSlug(source)
+  let candidate = base || `item-${Date.now()}`
+  let suffix = 2
 
+  while (true) {
+    let q = supabase.from(table).select('id').eq('slug', candidate)
+    if (typeof currentId !== 'undefined') q = q.neq('id', currentId)
+    const { data, error } = await q.limit(1)
+    if (error) throw error
+    if (!data || data.length === 0) return { ...body, slug: candidate }
+    candidate = `${base}-${suffix++}`
+  }
+}
 
 export async function handleApiRequest(path: string, options: RequestInit): Promise<any> {
   if (!supabase) throw new ApiError('Supabase not configured', 500)
@@ -84,10 +92,28 @@ export async function handleApiRequest(path: string, options: RequestInit): Prom
     if (pathname.startsWith('/api/public/projects') && method === 'GET') {
       const slugMatch = /^\/api\/public\/projects\/([^/]+)$/.exec(pathname)
       if (slugMatch) {
-        const { data, error } = await supabase
-          .from('projects').select('*').eq('slug', decodeURIComponent(slugMatch[1])).single()
-        if (error) throw error
-        return { project: data }
+        const decoded = decodeURIComponent(slugMatch[1])
+        const buildResult = async (matchValue: string) => {
+          const { data, error } = await supabase
+            .from('projects')
+            .select('*')
+            .eq('slug', matchValue)
+            .order('created_at', { ascending: true })
+          if (error) throw error
+          return data?.[0] || null
+        }
+
+        let project = await buildResult(decoded)
+        if (!project && /^\d+$/.test(decoded)) {
+          const { data, error } = await supabase.from('projects').select('*').eq('id', Number(decoded)).single()
+          if (!error) project = data
+        }
+        if (!project) {
+          const error = new Error('Project not found') as any
+          error.status = 404
+          throw error
+        }
+        return { project }
       }
       let q = supabase.from('projects').select('*').eq('published', 1)
       if (query.get('category')) q = q.eq('category', query.get('category'))
@@ -199,7 +225,8 @@ export async function handleApiRequest(path: string, options: RequestInit): Prom
 
       // CREATE  POST /api/admin/:resource
       if (method === 'POST' && subpath === '') {
-        const { data, error } = await supabase.from(table).insert(ensureSlug(cleanBody(getBody(), true))).select().single()
+        const body = await ensureUniqueSlug(table, cleanBody(getBody(), true))
+        const { data, error } = await supabase.from(table).insert(body).select().single()
         if (error) throw error
         return { item: data }
       }
@@ -221,7 +248,8 @@ export async function handleApiRequest(path: string, options: RequestInit): Prom
 
       // UPDATE  PUT /api/admin/:resource/:id
       if (method === 'PUT') {
-        const { error } = await supabase.from(table).update(ensureSlug(cleanBody(getBody(), true))).eq('id', subpath.slice(1))
+        const body = await ensureUniqueSlug(table, cleanBody(getBody(), true), Number(subpath.slice(1)))
+        const { error } = await supabase.from(table).update(body).eq('id', subpath.slice(1))
         if (error) throw error
         return { success: true }
       }
@@ -240,4 +268,3 @@ export async function handleApiRequest(path: string, options: RequestInit): Prom
     throw err instanceof ApiError ? err : new ApiError(err.message || 'Server error', 500)
   }
 }
-

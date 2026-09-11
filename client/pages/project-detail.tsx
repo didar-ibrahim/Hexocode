@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { PublicLayout, HexCta } from '../components/layout'
 import { Badge, Button, FullPageLoading, EmptyState } from '../components/ui'
 import { ProjectCard } from '../components/cards'
@@ -36,6 +36,37 @@ export default function ProjectDetailPage({ slug }: { slug: string }) {
   const { t } = useLanguage()
   const { data, loading, error } = useApi<DetailResponse>(() => api.get(`/api/public/projects/${encodeURIComponent(slug)}`), [slug])
   const [lightbox, setLightbox] = useState<number | null>(null)
+  const [coverScale, setCoverScale] = useState(0.88)
+  const coverRef = useRef<HTMLButtonElement | null>(null)
+
+  useEffect(() => {
+    let frame = 0
+
+    const updateCoverScale = () => {
+      frame = 0
+      const cover = coverRef.current
+      if (!cover) return
+
+      const { top } = cover.getBoundingClientRect()
+      const start = window.innerHeight * 0.85
+      const end = window.innerHeight * 0.2
+      const progress = Math.min(1, Math.max(0, (start - top) / (start - end)))
+      setCoverScale(0.88 + progress * 0.12)
+    }
+
+    const onScroll = () => {
+      if (!frame) frame = window.requestAnimationFrame(updateCoverScale)
+    }
+
+    updateCoverScale()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('resize', onScroll)
+    return () => {
+      window.cancelAnimationFrame(frame)
+      window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('resize', onScroll)
+    }
+  }, [])
 
   const p = data?.project
   usePageMeta(
@@ -152,8 +183,10 @@ export default function ProjectDetailPage({ slug }: { slug: string }) {
         {gallery.length > 0 && (
           <div className="mb-14">
             <button
+              ref={coverRef}
               onClick={() => setLightbox(0)}
-              className="group relative block w-full overflow-hidden rounded-xl border border-border"
+              className="group relative block w-full origin-center overflow-hidden rounded-xl border border-border will-change-transform"
+              style={{ transform: `scale(${coverScale})` }}
               aria-label="Open image gallery"
             >
               <img src={gallery[0]} alt={`${p.title} main screenshot`} className="aspect-[16/9] w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]" />

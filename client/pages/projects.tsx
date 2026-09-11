@@ -1,10 +1,10 @@
 import { useMemo, useState } from 'react'
 import { PublicLayout, PageHero } from '../components/layout'
-import { Input, Select, Pagination, FullPageLoading, ErrorState, EmptyState, Skeleton, Card } from '../components/ui'
+import { Input, Select, Pagination, ErrorState, EmptyState, Skeleton, Card } from '../components/ui'
 import { ProjectCard } from '../components/cards'
 import { useApi, useDebounced, usePageMeta } from '../lib/hooks'
 import { useLanguage } from '../lib/i18n'
-import { api, Project, Category } from '../lib/api'
+import { api, Project } from '../lib/api'
 import { Search, FolderOpen } from 'lucide-react'
 
 type ProjectsResponse = { projects: Project[]; total: number; page: number; per_page: number }
@@ -17,8 +17,6 @@ export default function ProjectsPage() {
   const [technology, setTechnology] = useState('')
   const [page, setPage] = useState(1)
   const debouncedQ = useDebounced(q, 350)
-
-  const { data: catData } = useApi<{ categories: Category[] }>(() => api.get('/api/public/categories'))
 
   const params = useMemo(() => {
     const p = new URLSearchParams()
@@ -36,6 +34,15 @@ export default function ProjectsPage() {
     const set = new Set<string>()
     data?.projects.forEach((p) => p.technologies.forEach((tItem) => set.add(tItem)))
     return Array.from(set).sort()
+  }, [data])
+
+  const projectCategories = useMemo(() => {
+    const categories = new Set<string>()
+    data?.projects.forEach((project) => {
+      const categoryName = project.category?.trim()
+      if (categoryName) categories.add(categoryName)
+    })
+    return Array.from(categories).sort((a, b) => a.localeCompare(b))
   }, [data])
 
   const resetPage = () => setPage(1)
@@ -74,9 +81,9 @@ export default function ProjectsPage() {
               aria-label="Filter by category"
             >
               <option value="">{t.projects.allCategories}</option>
-              {(catData?.categories ?? []).map((c) => (
-                <option key={c.id} value={c.name}>
-                  {c.name}
+              {projectCategories.map((categoryName) => (
+                <option key={categoryName} value={categoryName}>
+                  {categoryName}
                 </option>
               ))}
             </Select>

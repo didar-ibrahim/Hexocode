@@ -55,6 +55,15 @@ const emptyProject: Partial<Project> = {
   challenges: '', results: '', cover_image: '', gallery: [], featured: 0, published: 0, sort_order: 0,
 }
 
+const fallbackCategories = [
+  'Website Development',
+  'Web Applications',
+  'Mobile Apps',
+  'E-Commerce',
+  'Backend & APIs',
+  'Design Systems',
+]
+
 export function AdminProjectEditor({ id }: { id: string }) {
   usePageMeta(id === 'new' ? 'New Project — Hexocode Admin' : 'Edit Project — Hexocode Admin')
   const isNew = id === 'new'
@@ -65,8 +74,12 @@ export function AdminProjectEditor({ id }: { id: string }) {
   const [loaded, setLoaded] = useState(isNew)
   const [dirty, setDirty] = useState(false)
 
-  const { data: cats } = useApi<{ categories: Category[] }>(() => api.get('/api/admin/categories'))
+  const { data: cats, loading: categoriesLoading, error: categoriesError } = useApi<{ categories: Category[] }>(() => api.get('/api/admin/categories'))
   const { data: techs } = useApi<{ technologies: { id: number; name: string }[] }>(() => api.get('/api/admin/technologies'))
+  const categoryOptions = (cats?.categories?.length
+    ? cats.categories.map((category) => category.name)
+    : fallbackCategories
+  ).filter((category, index, values) => values.indexOf(category) === index)
 
   useEffect(() => {
     if (!isNew) {
@@ -153,12 +166,14 @@ export function AdminProjectEditor({ id }: { id: string }) {
                 <Field label="Category">
                   <Select value={form.category ?? ''} onChange={(e) => set('category', e.target.value)}>
                     <option value="">Select category…</option>
-                    {(cats?.categories ?? []).map((c) => (
-                      <option key={c.id} value={c.name}>
-                        {c.name}
+                    {categoryOptions.map((category) => (
+                      <option key={category} value={category}>
+                        {category}
                       </option>
                     ))}
                   </Select>
+                  {categoriesLoading && <p className="mt-1 text-xs text-muted-foreground">Loading categories…</p>}
+                  {categoriesError && <p className="mt-1 text-xs text-destructive">Categories could not be loaded. Default categories are available.</p>}
                 </Field>
                 <Field label="Technologies">
                   <TagInput

@@ -5,7 +5,7 @@ import { useApi, useDebounced } from '../../lib/hooks'
 import { api } from '../../lib/api'
 import { Link } from '../../components/link'
 import { Input, Select, Button, Badge, ConfirmDialog, EmptyState, toast, Skeleton } from '../../components/ui'
-import { Search, Plus, Pencil, Trash2, Copy, Eye, Star } from 'lucide-react'
+import { Search, Plus, Pencil, Trash2, Copy, Eye, EyeOff } from 'lucide-react'
 import { cn } from '../../lib/utils'
 
 export type Row = Record<string, unknown> & { id: number }
@@ -14,6 +14,10 @@ export type Column<T extends Row> = {
   header: string
   render: (item: T) => ReactNode
   className?: string
+}
+
+function isEnabled(value: unknown): boolean {
+  return value === 1 || value === '1' || value === true
 }
 
 export function AdminListPage<T extends Row>({
@@ -75,9 +79,10 @@ export function AdminListPage<T extends Row>({
   }
 
   const quickToggle = async (item: T, field: 'published' | 'featured') => {
+    const currentlyEnabled = isEnabled(item[field])
     try {
-      await api.put(`/api/admin${apiPath}/${item.id}`, { ...item, [field]: item[field] === 1 ? 0 : 1 })
-      toast(field === 'published' ? (item[field] === 1 ? 'Unpublished' : 'Published') : 'Updated')
+      await api.put(`/api/admin${apiPath}/${item.id}`, { ...item, [field]: currentlyEnabled ? 0 : 1 })
+      toast(field === 'published' ? (currentlyEnabled ? 'Unpublished' : 'Published') : 'Updated')
       refetch()
     } catch (e) {
       toast(e instanceof Error ? e.message : 'Update failed', 'error')
@@ -151,19 +156,12 @@ export function AdminListPage<T extends Row>({
                       {'published' in item && (
                         <button
                           onClick={() => quickToggle(item, 'published')}
-                          title={item.published === 1 ? 'Unpublish' : 'Publish'}
-                          className={cn('rounded-md p-1.5 transition-colors hover:bg-accent/15', item.published === 1 ? 'text-gold' : 'text-muted-foreground')}
+                          title={isEnabled(item.published) ? 'Unpublish' : 'Publish'}
+                          aria-label={isEnabled(item.published) ? 'Unpublish project' : 'Publish project'}
+                          aria-pressed={isEnabled(item.published)}
+                          className={cn('rounded-md p-1.5 transition-colors hover:bg-accent/15', isEnabled(item.published) ? 'text-gold' : 'text-muted-foreground')}
                         >
-                          <Eye className="h-4 w-4" />
-                        </button>
-                      )}
-                      {'featured' in item && (
-                        <button
-                          onClick={() => quickToggle(item, 'featured')}
-                          title={item.featured === 1 ? 'Unfeature' : 'Mark featured'}
-                          className={cn('rounded-md p-1.5 transition-colors hover:bg-accent/15', item.featured === 1 ? 'text-gold' : 'text-muted-foreground')}
-                        >
-                          <Star className={cn('h-4 w-4', item.featured === 1 && 'fill-gold')} />
+                          {isEnabled(item.published) ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
                         </button>
                       )}
                       <Link href={`/admin${apiPath}/${item.id}`}>

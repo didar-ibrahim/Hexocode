@@ -25,7 +25,7 @@ export function ServiceIcon({ icon, className }: { icon: string; className?: str
 }
 
 export function ProjectCard({ project, large }: { project: Project; large?: boolean }) {
-  const href = project.slug ? `/projects/${project.slug}` : '/projects'
+  const href = project.slug ? `/projects/${encodeURIComponent(project.slug)}` : `/projects/${project.id}`
   return (
     <Card hover className="group overflow-hidden">
       <Link href={href} className="block" aria-label={`View project: ${project.title}`}>

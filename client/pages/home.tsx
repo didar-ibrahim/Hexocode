@@ -3,7 +3,6 @@ import { PublicLayout, HexCta } from '../components/layout'
 import { SectionHeading } from '../components/ui'
 import { ProjectCard, ServiceCard, PackageCard, TestimonialCard } from '../components/cards'
 import { HexField } from '../components/HexField'
-import { LOGO_URL } from '../components/brand'
 import { usePageMeta, useReveal, useApi } from '../lib/hooks'
 import { useLanguage } from '../lib/i18n'
 import { api } from '../lib/api'
@@ -134,15 +133,13 @@ export default function HomePage() {
               style={{ animationDelay: '0.2s' }}
             >
               <span className="inline-block whitespace-nowrap">{t.home.heroLead}</span>{' '}
-              <span className="relative mx-1 inline-block h-[1.1em] min-w-[280px] overflow-hidden align-bottom">
+              <span className="relative mx-1 inline-grid h-[1.1em] overflow-hidden align-bottom">
                 {ROTATING.map((word, i) => (
                   <span
                     key={word}
-                    className="block text-accent-metal transition-all duration-700"
+                    className="col-start-1 row-start-1 whitespace-nowrap text-accent-metal transition-transform duration-700"
                     style={{
                       transform: `translateY(${(i - wordIndex) * 100}%)`,
-                      position: i === 0 ? 'relative' : 'absolute',
-                      inset: i === 0 ? undefined : 0,
                     }}
                   >
                     {word}
