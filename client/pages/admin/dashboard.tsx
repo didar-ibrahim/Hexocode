@@ -1,8 +1,9 @@
 import { AdminLayout } from './layout'
-import { usePageMeta } from '../../lib/hooks'
+import { usePageMeta, useApi } from '../../lib/hooks'
 import { Link } from '../../components/link'
 import { Card, Badge } from '../../components/ui'
 import type { ContactMessage } from '../../lib/api'
+import { supabase } from '../../lib/supabase'
 import {
   FolderKanban, Layers, Package, Inbox, MessageSquareQuote, Star, FileText, Activity,
 } from 'lucide-react'
@@ -28,20 +29,45 @@ type DashboardData = {
 
 const EMPTY_DASHBOARD: DashboardData = {
   stats: {
-    totalProjects: 0,
-    publishedProjects: 0,
-    draftProjects: 0,
-    featuredProjects: 0,
-    totalServices: 0,
-    totalPackages: 0,
-    publishedPackages: 0,
-    newMessages: 0,
-    totalMessages: 0,
-    publishedTestimonials: 0,
-    totalTestimonials: 0,
+    totalProjects: 0, publishedProjects: 0, draftProjects: 0, featuredProjects: 0,
+    totalServices: 0, totalPackages: 0, publishedPackages: 0,
+    newMessages: 0, totalMessages: 0, publishedTestimonials: 0, totalTestimonials: 0,
   },
   activity: [],
   latestMessages: [],
+}
+
+async function fetchDashboard(): Promise<DashboardData> {
+  if (!supabase) return EMPTY_DASHBOARD
+  const [projects, services, packages, testimonials, messages, latestMsgs] = await Promise.all([
+    supabase.from('projects').select('published, featured'),
+    supabase.from('services').select('id'),
+    supabase.from('packages').select('published'),
+    supabase.from('testimonials').select('published'),
+    supabase.from('contact_messages').select('status'),
+    supabase.from('contact_messages').select('id, name, email, company, project_type, status, created_at').order('created_at', { ascending: false }).limit(5),
+  ])
+  const proj = projects.data ?? []
+  const pkgs = packages.data ?? []
+  const testi = testimonials.data ?? []
+  const msgs = messages.data ?? []
+  return {
+    stats: {
+      totalProjects: proj.length,
+      publishedProjects: proj.filter((p: any) => p.published === 1).length,
+      draftProjects: proj.filter((p: any) => p.published !== 1).length,
+      featuredProjects: proj.filter((p: any) => p.featured === 1).length,
+      totalServices: (services.data ?? []).length,
+      totalPackages: pkgs.length,
+      publishedPackages: pkgs.filter((p: any) => p.published === 1).length,
+      newMessages: msgs.filter((m: any) => m.status === 'new').length,
+      totalMessages: msgs.length,
+      publishedTestimonials: testi.filter((t: any) => t.published === 1).length,
+      totalTestimonials: testi.length,
+    },
+    activity: [],
+    latestMessages: latestMsgs.data ?? [],
+  }
 }
 
 function StatCard({ href, Icon, label, value, hint, accent }: { href: string; Icon: typeof FolderKanban; label: string; value: number; hint?: string; accent?: boolean }) {
@@ -74,7 +100,8 @@ function timeAgo(iso: string): string {
 
 export default function AdminDashboard() {
   usePageMeta('Dashboard — Hexocode Admin')
-  const data = EMPTY_DASHBOARD
+  const { data: loaded } = useApi<DashboardData>(fetchDashboard)
+  const data = loaded ?? EMPTY_DASHBOARD
 
   return (
     <AdminLayout title="Dashboard">

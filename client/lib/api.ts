@@ -1,5 +1,7 @@
 // Tiny typed API client — same-origin JSON, credentials included.
 
+import { handleApiRequest } from './supabase-api'
+
 export class ApiError extends Error {
   status: number
   constructor(message: string, status: number) {
@@ -27,6 +29,10 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   }
 
   const promise = (async () => {
+    if (path.startsWith('/api/')) {
+      return await handleApiRequest(path, options) as T
+    }
+
     const res = await fetch(path, {
       credentials: 'same-origin',
       headers: options.body instanceof FormData ? undefined : { 'Content-Type': 'application/json' },

@@ -4,8 +4,9 @@ import { SectionHeading } from '../components/ui'
 import { ProjectCard, ServiceCard, PackageCard, TestimonialCard } from '../components/cards'
 import { HexField } from '../components/HexField'
 import { LOGO_URL } from '../components/brand'
-import { usePageMeta, useReveal } from '../lib/hooks'
+import { usePageMeta, useReveal, useApi } from '../lib/hooks'
 import { useLanguage } from '../lib/i18n'
+import { api } from '../lib/api'
 import type { Package, Project, Service, Testimonial } from '../lib/api'
 import { ArrowRight, ShieldCheck, Smartphone, Blocks, Gauge, Code2, Users, ArrowUpRight } from 'lucide-react'
 import { ReactNode, useEffect, useRef, useState } from 'react'
@@ -23,10 +24,15 @@ export default function HomePage() {
   const { t } = useLanguage()
   usePageMeta('Hexocode', t.home.heroDesc)
 
-  const projects: Project[] = []
-  const services: Service[] = []
-  const packages: Package[] = []
-  const testimonials: Testimonial[] = []
+  const { data: projectsData } = useApi<{ projects: Project[] }>(() => api.get('/api/public/projects?featured=1&limit=6'))
+  const { data: servicesData } = useApi<{ services: Service[] }>(() => api.get('/api/public/services'))
+  const { data: packagesData } = useApi<{ packages: Package[] }>(() => api.get('/api/public/packages'))
+  const { data: testimonialsData } = useApi<{ testimonials: Testimonial[] }>(() => api.get('/api/public/testimonials'))
+
+  const projects = projectsData?.projects ?? []
+  const services = servicesData?.services ?? []
+  const packages = packagesData?.packages ?? []
+  const testimonials = testimonialsData?.testimonials ?? []
 
   const capabilitiesList = [
     { Icon: Code2, label: t.home.capabilities.modernTech },

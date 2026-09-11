@@ -25,9 +25,10 @@ export function ServiceIcon({ icon, className }: { icon: string; className?: str
 }
 
 export function ProjectCard({ project, large }: { project: Project; large?: boolean }) {
+  const href = project.slug ? `/projects/${project.slug}` : '/projects'
   return (
     <Card hover className="group overflow-hidden">
-      <Link href={`/projects/${project.slug}`} className="block" aria-label={`View project: ${project.title}`}>
+      <Link href={href} className="block" aria-label={`View project: ${project.title}`}>
         <div className={cn('relative overflow-hidden', large ? 'aspect-[16/9]' : 'aspect-[16/10]')}>
           {project.cover_image ? (
             <img
@@ -65,6 +66,7 @@ export function ProjectCard({ project, large }: { project: Project; large?: bool
     </Card>
   )
 }
+
 
 export function ServiceCard({ service }: { service: Service }) {
   const { t } = useLanguage()

@@ -62,7 +62,7 @@ export default function ProjectDetailPage({ slug }: { slug: string }) {
       </PublicLayout>
     )
 
-  const gallery = [p.cover_image, ...p.gallery].filter(Boolean)
+  const gallery = [p.cover_image, ...(p.gallery ?? [])].filter(Boolean)
 
   return (
     <PublicLayout>
@@ -189,10 +189,10 @@ export default function ProjectDetailPage({ slug }: { slug: string }) {
                 <p className="text-sm leading-relaxed text-muted-foreground">{p.solution}</p>
               </Section>
             )}
-            {p.features.length > 0 && (
+            {(p.features ?? []).length > 0 && (
               <Section icon={Layers} title={t.common.keyFeatures}>
                 <ul className="grid gap-2.5 sm:grid-cols-2">
-                  {p.features.map((f, i) => (
+                  {(p.features ?? []).map((f, i) => (
                     <li key={i} className="flex items-start gap-2.5 text-sm text-muted-foreground">
                       <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-gold" />
                       {f}
@@ -215,11 +215,11 @@ export default function ProjectDetailPage({ slug }: { slug: string }) {
 
           {/* Sidebar */}
           <aside className="space-y-6 lg:sticky lg:top-24 lg:self-start">
-            {p.technologies.length > 0 && (
+            {(p.technologies ?? []).length > 0 && (
               <div className="glass rounded-2xl p-6">
                 <h3 className="mb-4 font-mono text-xs font-semibold uppercase tracking-[0.18em] text-gold">{t.common.technologies}</h3>
                 <div className="flex flex-wrap gap-2">
-                  {p.technologies.map((tItem) => (
+                  {(p.technologies ?? []).map((tItem) => (
                     <Badge key={tItem} variant="muted">
                       {tItem}
                     </Badge>
@@ -227,11 +227,11 @@ export default function ProjectDetailPage({ slug }: { slug: string }) {
                 </div>
               </div>
             )}
-            {p.tags.length > 0 && (
+            {(p.tags ?? []).length > 0 && (
               <div className="glass rounded-2xl p-6">
                 <h3 className="mb-4 font-mono text-xs font-semibold uppercase tracking-[0.18em] text-gold">{t.common.tags}</h3>
                 <div className="flex flex-wrap gap-2">
-                  {p.tags.map((tItem) => (
+                  {(p.tags ?? []).map((tItem) => (
                     <Badge key={tItem} variant="outline">
                       #{tItem}
                     </Badge>
@@ -255,11 +255,11 @@ export default function ProjectDetailPage({ slug }: { slug: string }) {
         </div>
 
         {/* Related */}
-        {data.related.length > 0 && (
+        {(data.related ?? []).length > 0 && (
           <div className="mt-20">
             <h2 className="mb-8 font-heading text-2xl font-bold">{t.common.relatedProjects}</h2>
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {data.related.map((r) => (
+              {(data.related ?? []).map((r) => (
                 <ProjectCard key={r.id} project={r} />
               ))}
             </div>
