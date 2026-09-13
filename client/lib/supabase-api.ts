@@ -22,13 +22,15 @@ function toSlug(str: string): string {
 }
 
 async function ensureUniqueSlug(table: string, body: Record<string, any>, currentId?: number): Promise<Record<string, any>> {
+  if (!supabase) throw new ApiError('Supabase not configured', 500)
+  const client = supabase
   const source = (body.title ?? body.name ?? '').toString()
   const base = (body.slug ?? '').trim() || toSlug(source)
   let candidate = base || `item-${Date.now()}`
   let suffix = 2
 
   while (true) {
-    let q = supabase.from(table).select('id').eq('slug', candidate)
+    let q = client.from(table).select('id').eq('slug', candidate)
     if (typeof currentId !== 'undefined') q = q.neq('id', currentId)
     const { data, error } = await q.limit(1)
     if (error) throw error
@@ -39,6 +41,7 @@ async function ensureUniqueSlug(table: string, body: Record<string, any>, curren
 
 export async function handleApiRequest(path: string, options: RequestInit): Promise<any> {
   if (!supabase) throw new ApiError('Supabase not configured', 500)
+  const client = supabase
 
   const method = options.method || 'GET'
   const url = new URL(path, 'http://localhost')
@@ -94,10 +97,11 @@ export async function handleApiRequest(path: string, options: RequestInit): Prom
       if (slugMatch) {
         const decoded = decodeURIComponent(slugMatch[1])
         const buildResult = async (matchValue: string) => {
-          const { data, error } = await supabase
+          const { data, error } = await client
             .from('projects')
             .select('*')
             .eq('slug', matchValue)
+            .eq('published', 1)
             .order('created_at', { ascending: true })
           if (error) throw error
           return data?.[0] || null
@@ -105,7 +109,12 @@ export async function handleApiRequest(path: string, options: RequestInit): Prom
 
         let project = await buildResult(decoded)
         if (!project && /^\d+$/.test(decoded)) {
-          const { data, error } = await supabase.from('projects').select('*').eq('id', Number(decoded)).single()
+          const { data, error } = await client
+            .from('projects')
+            .select('*')
+            .eq('id', Number(decoded))
+            .eq('published', 1)
+            .single()
           if (!error) project = data
         }
         if (!project) {

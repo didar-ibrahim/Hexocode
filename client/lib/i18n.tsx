@@ -4,7 +4,7 @@ export type Language = 'en' | 'fr'
 
 import enTranslations from './i18n/en'
 
-type Translations = {
+export type Translations = {
   nav: {
     home: string
     projects: string

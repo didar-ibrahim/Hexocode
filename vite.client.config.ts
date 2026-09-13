@@ -1,18 +1,15 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
-// Builds the React SPA into dist/
+// Builds the public React SPA into dist/ without the admin entry point.
 export default defineConfig({
   plugins: [react()],
   build: {
     outDir: 'dist',
-    emptyOutDir: false,
+    emptyOutDir: true,
     target: 'esnext',
     rollupOptions: {
-      input: {
-        main: 'index.html',
-        admin: 'admin.html',
-      },
+      input: 'index.html',
       output: {
         entryFileNames: 'assets/[name]-[hash].js',
         chunkFileNames: 'assets/[name]-[hash].js',
