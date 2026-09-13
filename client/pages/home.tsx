@@ -5,6 +5,7 @@ import { ProjectCard, ServiceCard, PackageCard, TestimonialCard } from '../compo
 import { HexField } from '../components/HexField'
 import { usePageMeta, useReveal, useApi } from '../lib/hooks'
 import { useLanguage } from '../lib/i18n'
+import { useSite } from '../lib/site'
 import { api } from '../lib/api'
 import type { Package, Project, Service, Testimonial } from '../lib/api'
 import { ArrowRight, ShieldCheck, Smartphone, Blocks, Gauge, Code2, Users, ArrowUpRight } from 'lucide-react'
@@ -21,7 +22,8 @@ function Reveal({ children, delay = 0 }: { children: ReactNode; delay?: number }
 
 export default function HomePage() {
   const { t } = useLanguage()
-  usePageMeta('Hexocode', t.home.heroDesc)
+  const site = useSite()
+  usePageMeta(site.company_name || 'Hexocode', site.tagline || t.home.heroDesc)
 
   const { data: projectsData } = useApi<{ projects: Project[] }>(() => api.get('/api/public/projects?featured=1&limit=6'))
   const { data: servicesData } = useApi<{ services: Service[] }>(() => api.get('/api/public/services'))
@@ -150,7 +152,7 @@ export default function HomePage() {
               <span className="inline-block mt-2">{t.home.heroTail}</span>
             </h1>
             <p className="anim-rise mx-auto mt-6 max-w-3xl text-sm leading-relaxed text-muted-foreground sm:text-base" style={{ animationDelay: '0.35s' }}>
-              {t.home.heroDesc}
+              {site.tagline || t.home.heroDesc}
             </p>
             <div className="anim-rise mt-9 flex flex-wrap items-center justify-center gap-4" style={{ animationDelay: '0.5s' }}>
               <HexCta href="/contact">

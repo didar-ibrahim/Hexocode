@@ -29,8 +29,6 @@ export function useSite(): SiteSettings {
         facebook: 'https://www.facebook.com/share/1HcYpaGo4E/?mibextid=wwXIfr',
         instagram: 'https://instagram.com/hexocode'
       },
-      seo_title: 'Hexocode — Digital Products Built for Real Businesses',
-      seo_description: '',
       about_story: '',
       mission: '',
       vision: '',

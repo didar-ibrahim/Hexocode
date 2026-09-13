@@ -3,7 +3,7 @@ import { MessageCircle, X, Send, ChevronRight } from 'lucide-react'
 import { cn } from '../lib/utils'
 import { useLanguage } from '../lib/i18n'
 import { navigate } from '../lib/router'
-import { LOGO_URL } from './brand'
+import { useSite } from '../lib/site'
 
 type Message = {
   id: string
@@ -12,6 +12,7 @@ type Message = {
 }
 
 export function Chatbot() {
+  const site = useSite()
   const [isOpen, setIsOpen] = useState(false)
   const [messages, setMessages] = useState<Message[]>([])
   const [inputValue, setInputValue] = useState('')
@@ -92,7 +93,7 @@ export function Chatbot() {
         <div className="flex items-center justify-between border-b border-border/50 bg-black/20 px-5 py-4">
           <div className="flex items-center gap-3">
             <div className="relative flex h-10 w-10 items-center justify-center rounded-full bg-gold/10">
-              <img src={LOGO_URL} alt="" className="h-7 w-7 object-contain" />
+              <img src={site.logo_url || '/static/logo.png'} alt="" className="h-7 w-7 object-contain" />
               <span className="absolute bottom-0.5 right-0.5 h-2.5 w-2.5 rounded-full border-2 border-background bg-green-500" />
             </div>
             <div>

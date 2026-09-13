@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { LOGO_URL } from './brand'
+import { useSite } from '../lib/site'
 
 const SHARDS = Array.from({ length: 19 })
 
@@ -9,6 +9,7 @@ const SHARDS = Array.from({ length: 19 })
  * into a hexagon and disappears.
  */
 export function Splash({ onDone }: { onDone: () => void }) {
+  const site = useSite()
   const [phase, setPhase] = useState<'build' | 'out'>('build')
   const [pct, setPct] = useState(0)
 
@@ -84,7 +85,7 @@ export function Splash({ onDone }: { onDone: () => void }) {
 
       <div className="glass-strong relative z-10 flex flex-col items-center gap-5 rounded-3xl px-10 py-9">
         <img
-          src={LOGO_URL}
+          src={site.logo_url || '/static/logo.png'}
           alt="Hexocode logo"
           className="anim-float h-24 w-auto drop-shadow-[0_16px_40px_rgba(0,0,0,0.45)]"
         />

@@ -225,7 +225,7 @@ export function Footer() {
           <div className="md:col-span-1">
             <Logo />
             <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
-              {t.about.description}
+              {site.tagline || t.about.description}
             </p>
             <SocialLinks links={site.social_links} className="mt-5" />
           </div>

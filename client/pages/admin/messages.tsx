@@ -143,7 +143,7 @@ export default function AdminMessagesPage() {
                 Delete
               </Button>
             </div>
-            <a href={`mailto:${open.email}?subject=Re: Your project enquiry`}>
+            <a href={`mailto:${open.email}?subject=Re: Your project enquiry`} className="block pt-2">
               <Button variant="gold" className="w-full">Reply by email</Button>
             </a>
           </div>

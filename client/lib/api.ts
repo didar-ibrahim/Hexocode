@@ -85,8 +85,6 @@ export type SiteSettings = {
   whatsapp: string
   address: string
   social_links: Record<string, string>
-  seo_title: string
-  seo_description: string
   about_story: string
   mission: string
   vision: string

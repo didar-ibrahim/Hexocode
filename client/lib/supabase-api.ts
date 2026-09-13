@@ -201,13 +201,14 @@ export async function handleApiRequest(path: string, options: RequestInit): Prom
         const search = query.get('q')
         if (search) {
           if (table === 'projects') q = q.ilike('title', `%${search}%`)
+          else if (table === 'testimonials') q = q.or(`client_name.ilike.%${search}%,company.ilike.%${search}%`)
           else q = q.ilike('name', `%${search}%`)
         }
         if (query.get('status')) {
           if (table === 'contact_messages') q = q.eq('status', query.get('status'))
           else q = q.eq('published', query.get('status') === 'published' ? 1 : 0)
         }
-        if (table === 'contact_messages') q = q.order('created_at', { ascending: false })
+        if (['contact_messages', 'testimonials'].includes(table)) q = q.order('created_at', { ascending: false })
         else if (['categories', 'technologies'].includes(table)) q = q.order('id')
         else q = q.order('sort_order').order('created_at', { ascending: false })
         const { data, error } = await q
@@ -225,7 +226,10 @@ export async function handleApiRequest(path: string, options: RequestInit): Prom
 
       // CREATE  POST /api/admin/:resource
       if (method === 'POST' && subpath === '') {
-        const body = await ensureUniqueSlug(table, cleanBody(getBody(), true))
+        const slugTables = ['projects', 'services', 'packages', 'categories', 'technologies']
+        const body = slugTables.includes(table)
+          ? await ensureUniqueSlug(table, cleanBody(getBody(), true))
+          : cleanBody(getBody(), true)
         const { data, error } = await supabase.from(table).insert(body).select().single()
         if (error) throw error
         return { item: data }
@@ -248,7 +252,10 @@ export async function handleApiRequest(path: string, options: RequestInit): Prom
 
       // UPDATE  PUT /api/admin/:resource/:id
       if (method === 'PUT') {
-        const body = await ensureUniqueSlug(table, cleanBody(getBody(), true), Number(subpath.slice(1)))
+        const slugTables = ['projects', 'services', 'packages', 'categories', 'technologies']
+        const body = slugTables.includes(table)
+          ? await ensureUniqueSlug(table, cleanBody(getBody(), true), Number(subpath.slice(1)))
+          : cleanBody(getBody(), true)
         const { error } = await supabase.from(table).update(body).eq('id', subpath.slice(1))
         if (error) throw error
         return { success: true }

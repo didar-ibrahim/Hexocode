@@ -23,7 +23,7 @@ type DashboardData = {
     publishedTestimonials: number
     totalTestimonials: number
   }
-  activity: { id: number; action: string; entity: string; entity_title: string; created_at: string; user_name: string | null }[]
+  activity: { id: string; action: string; entity: string; entity_title: string; created_at: string; user_name: string | null }[]
   latestMessages: Pick<ContactMessage, 'id' | 'name' | 'email' | 'company' | 'project_type' | 'status' | 'created_at'>[]
 }
 
@@ -40,10 +40,10 @@ const EMPTY_DASHBOARD: DashboardData = {
 async function fetchDashboard(): Promise<DashboardData> {
   if (!supabase) return EMPTY_DASHBOARD
   const [projects, services, packages, testimonials, messages, latestMsgs] = await Promise.all([
-    supabase.from('projects').select('published, featured'),
+    supabase.from('projects').select('id, title, published, featured, created_at'),
     supabase.from('services').select('id'),
     supabase.from('packages').select('published'),
-    supabase.from('testimonials').select('published'),
+    supabase.from('testimonials').select('id, client_name, published, created_at'),
     supabase.from('contact_messages').select('status'),
     supabase.from('contact_messages').select('id, name, email, company, project_type, status, created_at').order('created_at', { ascending: false }).limit(5),
   ])
@@ -51,6 +51,28 @@ async function fetchDashboard(): Promise<DashboardData> {
   const pkgs = packages.data ?? []
   const testi = testimonials.data ?? []
   const msgs = messages.data ?? []
+
+  const recentActivity = [
+    ...proj.map((p: any) => ({
+      id: `proj-${p.id}`,
+      action: 'Created project',
+      entity: 'project',
+      entity_title: p.title || 'Untitled',
+      created_at: p.created_at,
+      user_name: null,
+    })),
+    ...testi.map((t: any) => ({
+      id: `testi-${t.id}`,
+      action: 'Added testimonial',
+      entity: 'testimonial',
+      entity_title: t.client_name || 'Anonymous',
+      created_at: t.created_at,
+      user_name: null,
+    })),
+  ]
+    .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+    .slice(0, 6)
+
   return {
     stats: {
       totalProjects: proj.length,
@@ -65,7 +87,7 @@ async function fetchDashboard(): Promise<DashboardData> {
       publishedTestimonials: testi.filter((t: any) => t.published === 1).length,
       totalTestimonials: testi.length,
     },
-    activity: [],
+    activity: recentActivity,
     latestMessages: latestMsgs.data ?? [],
   }
 }

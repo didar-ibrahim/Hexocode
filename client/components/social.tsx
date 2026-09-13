@@ -1,12 +1,31 @@
 import { Github, Linkedin, Instagram, Facebook, Mail, MessageCircle } from 'lucide-react'
 import { cn } from '../lib/utils'
 
-const META: Record<string, { label: string; Icon: typeof Github }> = {
+function TiktokIcon(props: any) {
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5" />
+    </svg>
+  )
+}
+
+const META: Record<string, { label: string; Icon: React.ComponentType<any> }> = {
   github: { label: 'GitHub', Icon: Github },
   linkedin: { label: 'LinkedIn', Icon: Linkedin },
   instagram: { label: 'Instagram', Icon: Instagram },
   facebook: { label: 'Facebook', Icon: Facebook },
-  tiktok: { label: 'TikTok', Icon: Facebook }, // lucide has no tiktok; hidden by default in seed
+  tiktok: { label: 'TikTok', Icon: TiktokIcon },
   whatsapp: { label: 'WhatsApp', Icon: MessageCircle },
   email: { label: 'Email', Icon: Mail },
 }
