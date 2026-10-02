@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useSite } from '../lib/site'
 
 const SHARDS = Array.from({ length: 19 })
@@ -90,7 +90,7 @@ export function Splash({ onDone }: { onDone: () => void }) {
           className="anim-float h-24 w-auto drop-shadow-[0_16px_40px_rgba(0,0,0,0.45)]"
         />
         <div className="text-center">
-          <p className="font-heading text-2xl tracking-[0.5em] text-brand-light">HEXOCODE</p>
+          <p className="font-heading text-2xl tracking-[0.5em] text-brand-light">{(site.company_name || 'HEXOCODE').toUpperCase()}</p>
         </div>
         <div className="relative h-[3px] w-56 overflow-hidden rounded-full bg-white/10">
           <div
