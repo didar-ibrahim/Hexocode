@@ -1,4 +1,4 @@
-import React, { useEffect, useState, ReactNode } from 'react'
+﻿import React, { useEffect, useState, ReactNode } from 'react'
 import { Link } from './link'
 import { BrandMark, Logo } from './brand'
 import { SocialLinks } from './social'
@@ -17,8 +17,8 @@ function LanguageToggle() {
   return (
     <button
       onClick={() => setLang(lang === 'en' ? 'fr' : 'en')}
-      aria-label={lang === 'en' ? 'Passer en français' : 'Switch to English'}
-      title={lang === 'en' ? 'Passer en français' : 'Switch to English'}
+      aria-label={lang === 'en' ? 'Passer en franÃ§ais' : 'Switch to English'}
+      title={lang === 'en' ? 'Passer en franÃ§ais' : 'Switch to English'}
       className="glass hex-clip-v group relative grid h-11 border border-foreground/20 bg-white/70 px-3 font-mono text-[11px] font-bold uppercase tracking-wider shadow-md transition-all duration-300 hover:scale-105 hover:border-gold/60 hover:shadow-[0_4px_18px_rgba(23,61,45,0.18)] dark:bg-primary/30"
     >
       <span
@@ -277,7 +277,7 @@ export function Footer() {
         <div className="accent-rule mt-12" />
         <div className="mt-8 flex flex-col items-center justify-between gap-4 text-sm text-muted-foreground sm:flex-row">
           <p>
-            © {year} {site.company_name}. {t.common.allRightsReserved}
+            Â© {year} {site.company_name}. {t.common.allRightsReserved}
           </p>
           <div className="flex items-center gap-6">
             <Link href="/privacy" className="transition-colors hover:text-foreground">
@@ -308,12 +308,11 @@ export function PageHero({
 }) {
   return (
     <section className="relative overflow-hidden pb-16 pt-28 md:pb-20 md:pt-32">
-      <HexField className="absolute inset-0 h-full w-full" />
       <div
         className="pointer-events-none absolute inset-0"
         style={{
           background:
-            'radial-gradient(60% 55% at 50% 40%, color-mix(in oklab, var(--brand-primary-2) 22%, transparent), transparent 70%)',
+            'radial-gradient(60% 55% at 50% 40%, color-mix(in oklab, var(--brand-primary-2) 18%, transparent), transparent 70%)',
         }}
       />
       <div className={cn('relative mx-auto max-w-6xl px-4 sm:px-6 lg:px-8', align === 'center' && 'text-center')}>
@@ -374,3 +373,5 @@ export function PublicLayout({ children }: { children: ReactNode }) {
 }
 
 export { HexCta }
+
+

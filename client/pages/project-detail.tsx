@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+﻿import { useState } from 'react'
 import { PublicLayout, HexCta } from '../components/layout'
 import { Badge, Button, FullPageLoading, EmptyState } from '../components/ui'
 import { ProjectCard } from '../components/cards'
@@ -17,17 +17,13 @@ type DetailResponse = { project: Project; related: Project[] }
 function Section({ icon: Icon, title, children }: { icon: typeof Target; title: string; children: React.ReactNode }) {
   return (
     <section className="glass relative overflow-hidden rounded-2xl p-6">
-      <span
-        className="hex-clip-v absolute -right-6 -top-6 h-20 w-20 opacity-10"
-        style={{ background: 'var(--gradient-accent)' }}
-      />
       <div className="relative mb-3 flex items-center gap-2.5">
         <span className="hex-clip-v flex h-8 w-8 items-center justify-center text-gold" style={{ background: 'color-mix(in oklab, var(--brand-accent) 18%, transparent)' }}>
           <Icon className="h-4 w-4 text-gold" />
         </span>
         <h2 className="font-heading text-lg font-semibold">{title}</h2>
       </div>
-      <div className="relative">{children}</div>
+      <div>{children}</div>
     </section>
   )
 }
@@ -36,37 +32,6 @@ export default function ProjectDetailPage({ slug }: { slug: string }) {
   const { t } = useLanguage()
   const { data, loading, error } = useApi<DetailResponse>(() => api.get(`/api/public/projects/${encodeURIComponent(slug)}`), [slug])
   const [lightbox, setLightbox] = useState<number | null>(null)
-  const [coverScale, setCoverScale] = useState(0.88)
-  const coverRef = useRef<HTMLButtonElement | null>(null)
-
-  useEffect(() => {
-    let frame = 0
-
-    const updateCoverScale = () => {
-      frame = 0
-      const cover = coverRef.current
-      if (!cover) return
-
-      const { top } = cover.getBoundingClientRect()
-      const start = window.innerHeight * 0.85
-      const end = window.innerHeight * 0.2
-      const progress = Math.min(1, Math.max(0, (start - top) / (start - end)))
-      setCoverScale(0.88 + progress * 0.12)
-    }
-
-    const onScroll = () => {
-      if (!frame) frame = window.requestAnimationFrame(updateCoverScale)
-    }
-
-    updateCoverScale()
-    window.addEventListener('scroll', onScroll, { passive: true })
-    window.addEventListener('resize', onScroll)
-    return () => {
-      window.cancelAnimationFrame(frame)
-      window.removeEventListener('scroll', onScroll)
-      window.removeEventListener('resize', onScroll)
-    }
-  }, [])
 
   const p = data?.project
   usePageMeta(
@@ -115,7 +80,7 @@ export default function ProjectDetailPage({ slug }: { slug: string }) {
 
           <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {p.company_name && (
-              <div className="glass flex items-center gap-3 px-4 py-3">
+              <div className="glass flex items-center gap-3 rounded-xl px-4 py-3">
                 <Building2 className="h-5 w-5 shrink-0 text-gold" />
                 <div>
                   <p className="text-xs text-muted-foreground">{t.common.client}</p>
@@ -124,7 +89,7 @@ export default function ProjectDetailPage({ slug }: { slug: string }) {
               </div>
             )}
             {p.industry && (
-              <div className="glass flex items-center gap-3 px-4 py-3">
+              <div className="glass flex items-center gap-3 rounded-xl px-4 py-3">
                 <Briefcase className="h-5 w-5 shrink-0 text-gold" />
                 <div>
                   <p className="text-xs text-muted-foreground">{t.common.industry}</p>
@@ -133,7 +98,7 @@ export default function ProjectDetailPage({ slug }: { slug: string }) {
               </div>
             )}
             {p.duration && (
-              <div className="glass flex items-center gap-3 px-4 py-3">
+              <div className="glass flex items-center gap-3 rounded-xl px-4 py-3">
                 <Clock className="h-5 w-5 shrink-0 text-gold" />
                 <div>
                   <p className="text-xs text-muted-foreground">{t.common.duration}</p>
@@ -142,13 +107,12 @@ export default function ProjectDetailPage({ slug }: { slug: string }) {
               </div>
             )}
             {p.start_date && (
-              <div className="glass flex items-center gap-3 px-4 py-3">
+              <div className="glass flex items-center gap-3 rounded-xl px-4 py-3">
                 <Calendar className="h-5 w-5 shrink-0 text-gold" />
                 <div>
                   <p className="text-xs text-muted-foreground">{t.common.timeline}</p>
                   <p className="text-sm font-medium">
-                    {p.start_date}
-                    {p.end_date ? ` → ${p.end_date}` : ''}
+                    {p.start_date}{p.end_date ? ` → ${p.end_date}` : ''}
                   </p>
                 </div>
               </div>
@@ -183,19 +147,17 @@ export default function ProjectDetailPage({ slug }: { slug: string }) {
         {gallery.length > 0 && (
           <div className="mb-14">
             <button
-              ref={coverRef}
               onClick={() => setLightbox(0)}
-              className="group relative block w-full origin-center overflow-hidden rounded-xl border border-border will-change-transform"
-              style={{ transform: `scale(${coverScale})` }}
+              className="group relative block w-full overflow-hidden rounded-xl border border-border"
               aria-label="Open image gallery"
             >
-              <img src={gallery[0]} alt={`${p.title} main screenshot`} className="aspect-[16/9] w-full object-cover transition-transform duration-500 group-hover:scale-[1.02]" />
+              <img src={gallery[0]} alt={`${p.title} main screenshot`} className="aspect-[16/9] w-full object-cover" />
             </button>
             {gallery.length > 1 && (
               <div className="mt-4 grid grid-cols-3 gap-4 sm:grid-cols-4">
                 {gallery.slice(1, 5).map((src, i) => (
                   <button key={src} onClick={() => setLightbox(i + 1)} className="overflow-hidden rounded-lg border border-border" aria-label={`Open gallery image ${i + 2}`}>
-                    <img src={src} alt={`${p.title} screenshot ${i + 2}`} loading="lazy" className="aspect-[16/10] w-full object-cover transition-transform duration-300 hover:scale-105" />
+                    <img src={src} alt={`${p.title} screenshot ${i + 2}`} loading="lazy" className="aspect-[16/10] w-full object-cover" />
                   </button>
                 ))}
               </div>
@@ -253,9 +215,7 @@ export default function ProjectDetailPage({ slug }: { slug: string }) {
                 <h3 className="mb-4 font-mono text-xs font-semibold uppercase tracking-[0.18em] text-gold">{t.common.technologies}</h3>
                 <div className="flex flex-wrap gap-2">
                   {(p.technologies ?? []).map((tItem) => (
-                    <Badge key={tItem} variant="muted">
-                      {tItem}
-                    </Badge>
+                    <Badge key={tItem} variant="muted">{tItem}</Badge>
                   ))}
                 </div>
               </div>
@@ -265,18 +225,12 @@ export default function ProjectDetailPage({ slug }: { slug: string }) {
                 <h3 className="mb-4 font-mono text-xs font-semibold uppercase tracking-[0.18em] text-gold">{t.common.tags}</h3>
                 <div className="flex flex-wrap gap-2">
                   {(p.tags ?? []).map((tItem) => (
-                    <Badge key={tItem} variant="outline">
-                      #{tItem}
-                    </Badge>
+                    <Badge key={tItem} variant="outline">#{tItem}</Badge>
                   ))}
                 </div>
               </div>
             )}
             <div className="glass-strong relative overflow-hidden rounded-2xl p-6">
-              <span
-                className="hex-clip-v absolute -right-8 -top-8 h-24 w-24 opacity-15"
-                style={{ background: 'var(--gradient-accent)' }}
-              />
               <h3 className="relative font-heading text-lg font-semibold">{t.projectDetail.needSimilarTitle}</h3>
               <p className="relative mt-2 text-sm text-muted-foreground">{t.projectDetail.needSimilarDesc}</p>
               <HexCta href="/contact" className="relative mt-4 w-full">
@@ -309,10 +263,7 @@ export default function ProjectDetailPage({ slug }: { slug: string }) {
           {lightbox > 0 && (
             <button
               className="absolute left-4 rounded-md p-2 text-white/80 hover:bg-white/10"
-              onClick={(e) => {
-                e.stopPropagation()
-                setLightbox(lightbox - 1)
-              }}
+              onClick={(e) => { e.stopPropagation(); setLightbox(lightbox - 1) }}
               aria-label="Previous image"
             >
               <ChevronLeft className="h-8 w-8" />
@@ -322,10 +273,7 @@ export default function ProjectDetailPage({ slug }: { slug: string }) {
           {lightbox < gallery.length - 1 && (
             <button
               className="absolute right-4 top-1/2 -translate-y-1/2 rounded-md p-2 text-white/80 hover:bg-white/10"
-              onClick={(e) => {
-                e.stopPropagation()
-                setLightbox(lightbox + 1)
-              }}
+              onClick={(e) => { e.stopPropagation(); setLightbox(lightbox + 1) }}
               aria-label="Next image"
             >
               <ChevronRight className="h-8 w-8" />

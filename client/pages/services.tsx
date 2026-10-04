@@ -1,8 +1,8 @@
-import { PublicLayout, PageHero } from '../components/layout'
+﻿import { PublicLayout, PageHero } from '../components/layout'
 import { SectionHeading, Badge, Button, FullPageLoading, ErrorState, EmptyState } from '../components/ui'
 import { ServiceIcon } from '../components/cards'
 import { Link } from '../components/link'
-import { useApi, usePageMeta, useReveal } from '../lib/hooks'
+import { useApi, usePageMeta } from '../lib/hooks'
 import { useLanguage } from '../lib/i18n'
 import { api, Service } from '../lib/api'
 import { ArrowRight, Check, Layers } from 'lucide-react'
@@ -11,7 +11,6 @@ export default function ServicesPage() {
   const { t } = useLanguage()
   usePageMeta(`${t.services.title} — Hexocode`, t.services.description)
   const { data, loading, error, refetch } = useApi<{ services: Service[] }>(() => api.get('/api/public/services'))
-  const ctaRef = useReveal<HTMLDivElement>()
 
   return (
     <PublicLayout>
@@ -35,7 +34,7 @@ export default function ServicesPage() {
                 <article
                   key={s.id}
                   id={s.slug}
-                  className="glass group relative scroll-mt-24 overflow-hidden rounded-2xl p-8 transition-transform duration-500 hover:-translate-y-2 md:p-10"
+                  className="glass group relative scroll-mt-24 overflow-hidden rounded-2xl p-8 md:p-10"
                 >
                   <div className="grid gap-8 lg:grid-cols-[1fr_320px]">
                     <div>
@@ -52,9 +51,7 @@ export default function ServicesPage() {
                       {s.technologies.length > 0 && (
                         <div className="mt-5 flex flex-wrap gap-2">
                           {s.technologies.map((tech) => (
-                            <Badge key={tech} variant="muted">
-                              {tech}
-                            </Badge>
+                            <Badge key={tech} variant="muted">{tech}</Badge>
                           ))}
                         </div>
                       )}
@@ -86,12 +83,8 @@ export default function ServicesPage() {
             </div>
           )}
 
-          <div ref={ctaRef} className="mt-16">
+          <div className="mt-16">
             <div className="glass-strong relative overflow-hidden rounded-[2rem] px-8 py-12 text-center md:p-12">
-              <span
-                className="hex-clip-v absolute -left-12 -top-12 h-40 w-40 opacity-15"
-                style={{ background: 'var(--gradient-brand)' }}
-              />
               <SectionHeading title={t.services.notSureTitle} description={t.services.notSureDesc} />
               <Link href="/contact">
                 <Button variant="gold" size="lg">
