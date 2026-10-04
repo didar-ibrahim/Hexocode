@@ -1,4 +1,4 @@
-// Hexocode UI kit — shadcn-style primitives built on the design tokens.
+﻿// Hexocode UI kit — shadcn-style primitives built on the design tokens.
 import React, { ButtonHTMLAttributes, InputHTMLAttributes, TextareaHTMLAttributes, SelectHTMLAttributes, ReactNode, useEffect, useRef, useState } from 'react'
 import { cn } from '../lib/utils'
 import { X, Loader2, Star, ChevronDown } from 'lucide-react'
@@ -213,7 +213,7 @@ export function Card({ children, className, hover }: { children: ReactNode; clas
     <div
       className={cn(
         'glass relative overflow-hidden rounded-2xl text-card-foreground',
-        hover && 'transition-all duration-500 hover:-translate-y-2',
+        hover && 'transition-colors',
         className
       )}
     >
@@ -445,3 +445,4 @@ export function Pagination({ page, total, perPage, onPage }: { page: number; tot
     </nav>
   )
 }
+

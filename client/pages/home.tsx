@@ -40,50 +40,64 @@ export default function HomePage() {
           className="pointer-events-none absolute inset-0"
           style={{
             background:
-              'radial-gradient(60% 55% at 50% 40%, color-mix(in oklab, var(--brand-primary-2) 22%, transparent), transparent 70%)',
+              'radial-gradient(60% 55% at 50% 40%, color-mix(in oklab, var(--brand-primary-2) 20%, transparent), transparent 70%)',
           }}
         />
-        <div className="relative z-10 mx-auto max-w-5xl px-5 py-32 text-center">
-          <h1 className="font-display leading-[1.1] tracking-[-0.02em] text-[clamp(2.5rem,5.5vw,7.5rem)]">
-            <span>{t.home.heroLead}</span>{' '}
+        <div className="relative z-10 mx-auto max-w-4xl px-6 py-32 text-center">
+
+          {/* Badge label */}
+          <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-2 text-sm text-muted-foreground">
+            <span className="h-2 w-2 rounded-full bg-gold" />
+            {site.company_name || 'Hexocode'} — Digital Studio
+          </div>
+
+          {/* Headline */}
+          <h1 className="font-display text-[clamp(2.8rem,6vw,6rem)] font-bold leading-[1.05] tracking-[-0.03em]">
+            {t.home.heroLead}{' '}
             <span className="text-accent-metal">{t.home.rotating?.[0] ?? ''}</span>
-            <br className="hidden sm:block" />
-            <span className="mt-2 inline-block">{t.home.heroTail}</span>
+            <br />
+            {t.home.heroTail}
           </h1>
-          <div className="mt-9 flex flex-wrap items-center justify-center gap-4">
+
+          {/* Short description */}
+          <p className="mx-auto mt-6 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg">
+            {t.home.heroDesc}
+          </p>
+
+          {/* CTAs */}
+          <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
             <HexCta href="/contact">{t.common.startProject}</HexCta>
             <Link
               href="/projects"
-              className="glass inline-flex items-center rounded-full px-8 py-4 font-mono text-[11px] uppercase tracking-[0.22em]"
+              className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-7 py-3.5 text-sm font-medium transition-colors hover:border-gold/50 hover:text-gold"
             >
               {t.common.viewWork}
+              <ArrowUpRight className="h-4 w-4" />
             </Link>
           </div>
-          <dl className="mx-auto mt-12 grid max-w-2xl grid-cols-1 gap-4 sm:grid-cols-2">
+
+          {/* Capability pills */}
+          <div className="mt-14 flex flex-wrap items-center justify-center gap-3">
             {capabilitiesList.map(({ Icon, label }) => (
-              <div key={label} className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
+              <div key={label} className="flex items-center gap-2 rounded-full border border-border bg-card px-4 py-2 text-sm text-muted-foreground">
                 <Icon className="h-4 w-4 text-gold" />
-                <dt className="font-mono text-[10px] uppercase tracking-[0.18em]">{label}</dt>
+                <span>{label}</span>
               </div>
             ))}
-          </dl>
+          </div>
         </div>
       </section>
 
       {/* ---- Featured projects ---- */}
       {projects.length > 0 && (
         <section className="relative overflow-hidden py-24">
-          <div className="grid-bg absolute inset-0 opacity-60" />
+          <div className="grid-bg absolute inset-0 opacity-50" />
           <div className="relative mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
             <div className="mb-12 flex flex-wrap items-end justify-between gap-6">
               <div className="max-w-xl">
-                <p className="mb-3 font-mono text-[10px] font-medium uppercase tracking-[0.3em] text-gold">
-                  {t.home.selectedWork}
-                </p>
-                <h2 className="text-balance text-3xl font-bold tracking-tight md:text-4xl">
-                  {t.home.featuredProjectsTitle}
-                </h2>
-                <p className="mt-4 text-muted-foreground">{t.home.featuredProjectsSub}</p>
+                <p className="mb-2 text-sm font-semibold uppercase tracking-widest text-gold">{t.home.selectedWork}</p>
+                <h2 className="text-3xl font-bold md:text-4xl">{t.home.featuredProjectsTitle}</h2>
+                <p className="mt-3 text-muted-foreground">{t.home.featuredProjectsSub}</p>
               </div>
               <Link href="/projects" className="group inline-flex items-center gap-2 text-sm font-medium text-gold">
                 {t.common.viewAllProjects}
@@ -120,7 +134,7 @@ export default function HomePage() {
       {/* ---- Packages preview ---- */}
       {packages.length > 0 && (
         <section className="relative overflow-hidden py-24">
-          <div className="grid-bg absolute inset-0 opacity-60" />
+          <div className="grid-bg absolute inset-0 opacity-50" />
           <div className="relative mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
             <SectionHeading
               eyebrow={t.common.pricing}
@@ -144,16 +158,16 @@ export default function HomePage() {
             title={t.home.whyTitle}
             description={t.home.whySub}
           />
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {t.home.whyItems.map((w, i) => (
               <article key={w.title} className="glass relative h-full overflow-hidden rounded-2xl p-7">
                 <span
-                  className="hex-clip-v mb-4 grid h-9 w-8 place-items-center font-mono text-[10px] text-accent-foreground"
+                  className="hex-clip-v mb-5 grid h-9 w-8 place-items-center font-mono text-[10px] text-accent-foreground"
                   style={{ background: 'var(--gradient-accent)' }}
                 >
                   {i + 1}
                 </span>
-                <h3 className="font-heading text-lg font-semibold tracking-wide">{w.title}</h3>
+                <h3 className="text-lg font-semibold">{w.title}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{w.text}</p>
               </article>
             ))}
@@ -164,7 +178,7 @@ export default function HomePage() {
       {/* ---- Testimonials ---- */}
       {testimonials.length > 0 && (
         <section className="relative overflow-hidden py-24">
-          <div className="grid-bg absolute inset-0 opacity-60" />
+          <div className="grid-bg absolute inset-0 opacity-50" />
           <div className="relative mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
             <SectionHeading
               eyebrow={t.common.testimonials}
@@ -181,16 +195,16 @@ export default function HomePage() {
       )}
 
       {/* ---- CTA ---- */}
-      <section className="relative overflow-hidden py-24">
-        <div className="relative mx-auto max-w-6xl px-4 sm:px-6">
-          <div className="glass-strong relative overflow-hidden rounded-[2rem] px-6 py-16 text-center sm:px-16">
+      <section className="py-24">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6">
+          <div className="glass-strong relative overflow-hidden rounded-3xl px-8 py-16 text-center sm:px-16">
             <div
-              className="relative mx-auto mb-6 flex h-14 w-14 items-center justify-center hex-clip-v"
+              className="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-2xl"
               style={{ background: 'color-mix(in oklab, var(--brand-accent) 18%, transparent)' }}
             >
               <Users className="h-7 w-7 text-gold" />
             </div>
-            <h2 className="text-balance font-heading text-3xl font-bold tracking-tight md:text-4xl">
+            <h2 className="text-3xl font-bold md:text-4xl">
               {t.home.ctaTitleLead} <span className="text-accent-metal">{t.home.ctaTitleGold}</span>
             </h2>
             <p className="mx-auto mt-4 max-w-xl text-muted-foreground">{t.home.ctaSub}</p>

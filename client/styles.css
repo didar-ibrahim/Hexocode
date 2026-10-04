@@ -4,8 +4,8 @@
 
 /* ---------------------------------------------------------------------------
    Hexocode design tokens
-   Brand greens are identity; used for buttons/accents only.
-   Backgrounds are clean neutral so the green pops.
+   Brand greens used for buttons/accents only.
+   Backgrounds are clean neutral so green pops.
    Gold #B7A35A stays as the highlight accent.
 --------------------------------------------------------------------------- */
 :root {
@@ -59,29 +59,29 @@
 .dark {
   /* Dark mode — warm charcoal, NOT green */
   --background: 40 4% 7%;
-  --foreground: 50 8% 91%;
+  --foreground: 50 8% 93%;
   --card: 40 4% 10%;
-  --card-foreground: 50 8% 91%;
+  --card-foreground: 50 8% 93%;
   --popover: 40 4% 10%;
-  --popover-foreground: 50 8% 91%;
+  --popover-foreground: 50 8% 93%;
   --primary: 147 39% 26%;
   --primary-foreground: 120 20% 96%;
   --secondary: 149 45% 16%;
   --secondary-foreground: 50 8% 91%;
   --muted: 40 4% 15%;
-  --muted-foreground: 50 5% 55%;
+  --muted-foreground: 50 5% 58%;
   --accent: 46 38% 53%;
   --accent-foreground: 148 52% 9%;
   --gold: 46 38% 53%;
   --gold-foreground: 148 52% 9%;
   --destructive: 0 55% 42%;
   --destructive-foreground: 0 0% 98%;
-  --border: 40 4% 18%;
+  --border: 40 4% 19%;
   --input: 40 4% 22%;
   --ring: 46 38% 53%;
 
-  --glass-bg: color-mix(in oklab, #1e1e1b 70%, transparent);
-  --glass-border: color-mix(in oklab, #ffffff 9%, transparent);
+  --glass-bg: color-mix(in oklab, #1e1e1b 72%, transparent);
+  --glass-border: color-mix(in oklab, #ffffff 10%, transparent);
   --grid-line: color-mix(in oklab, #ffffff 5%, transparent);
 }
 
@@ -94,17 +94,18 @@
   }
   body {
     @apply bg-background text-foreground font-body antialiased;
+    font-size: 16px;
+    line-height: 1.65;
     transition:
       background-color 0.5s ease,
       color 0.5s ease;
   }
-  h1,
-  h2,
-  h3,
-  h4 {
-    @apply font-heading;
-    letter-spacing: -0.01em;
-  }
+  h1 { @apply font-heading; font-weight: 700; letter-spacing: -0.03em; line-height: 1.08; }
+  h2 { @apply font-heading; font-weight: 700; letter-spacing: -0.02em; line-height: 1.15; }
+  h3 { @apply font-heading; font-weight: 600; letter-spacing: -0.01em; line-height: 1.3; }
+  h4 { @apply font-heading; font-weight: 600; letter-spacing: -0.01em; }
+  p  { line-height: 1.7; }
+
   ::selection {
     background: color-mix(in oklab, var(--brand-accent) 40%, transparent);
     color: hsl(var(--foreground));
@@ -113,38 +114,17 @@
     outline: 2px solid hsl(var(--ring));
     outline-offset: 2px;
   }
-  ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-  }
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
   ::-webkit-scrollbar-thumb {
-    background: hsl(var(--muted-foreground) / 0.30);
+    background: hsl(var(--muted-foreground) / 0.25);
     border-radius: 8px;
   }
-  ::-webkit-scrollbar-track {
-    background: transparent;
-  }
+  ::-webkit-scrollbar-track { background: transparent; }
 }
 
 @layer components {
-  .surface-grid {
-    background-image:
-      linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
-      linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
-    background-size: 64px 64px;
-  }
-  .surface-grid-soft {
-    background-image:
-      linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
-      linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
-    background-size: 64px 64px;
-  }
-  .text-balance {
-    text-wrap: balance;
-  }
-  .prose-hexo p {
-    @apply mb-4 leading-relaxed text-muted-foreground;
-  }
+  .text-balance { text-wrap: balance; }
+  .prose-hexo p { @apply mb-5 leading-[1.75] text-muted-foreground; }
 }
 
 @layer utilities {
@@ -154,7 +134,7 @@
     backdrop-filter: blur(var(--glass-blur)) saturate(150%);
     box-shadow:
       inset 0 1px 0 color-mix(in oklab, white 18%, transparent),
-      0 16px 48px -32px color-mix(in oklab, #000000 40%, transparent);
+      0 12px 40px -20px color-mix(in oklab, #000000 30%, transparent);
   }
   .glass-strong {
     background: color-mix(in oklab, var(--glass-bg) 85%, hsl(var(--background)));
@@ -162,15 +142,10 @@
     backdrop-filter: blur(calc(var(--glass-blur) * 1.5)) saturate(170%);
     box-shadow:
       inset 0 1px 0 color-mix(in oklab, white 22%, transparent),
-      inset 0 -1px 0 color-mix(in oklab, var(--brand-accent) 10%, transparent),
-      0 32px 80px -40px color-mix(in oklab, #000000 50%, transparent);
+      0 24px 64px -30px color-mix(in oklab, #000000 45%, transparent);
   }
-  .hex-clip {
-    clip-path: polygon(25% 3%, 75% 3%, 100% 50%, 75% 97%, 25% 97%, 0% 50%);
-  }
-  .hex-clip-v {
-    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-  }
+  .hex-clip { clip-path: polygon(25% 3%, 75% 3%, 100% 50%, 75% 97%, 25% 97%, 0% 50%); }
+  .hex-clip-v { clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); }
   .text-accent-metal {
     background: var(--gradient-accent);
     background-clip: text;
@@ -191,27 +166,17 @@
       transparent
     );
   }
-  .anim-float {
-    animation: hex-float 9s ease-in-out infinite;
-  }
-  .anim-spin-slow {
-    animation: hex-spin 26s linear infinite;
-  }
-  .anim-rise {
-    animation: rise-in 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
-  }
-  .anim-marquee {
-    animation: marquee 34s linear infinite;
-  }
+  .anim-float { animation: hex-float 9s ease-in-out infinite; }
+  .anim-spin-slow { animation: hex-spin 26s linear infinite; }
+  .anim-rise { animation: rise-in 0.9s cubic-bezier(0.22, 1, 0.36, 1) both; }
+  .anim-marquee { animation: marquee 34s linear infinite; }
 }
 
 @keyframes hex-float {
   0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
   50% { transform: translate3d(0, -18px, 0) rotate(3deg); }
 }
-@keyframes hex-spin {
-  to { transform: rotate(360deg); }
-}
+@keyframes hex-spin { to { transform: rotate(360deg); } }
 @keyframes sheen {
   0% { transform: translateX(-120%) skewX(-18deg); }
   100% { transform: translateX(220%) skewX(-18deg); }
@@ -229,7 +194,7 @@
   to { transform: translateX(-50%); }
 }
 @keyframes shard-in {
-  from { opacity: 0; transform: translate3d(var(--sx, 0), var(--sy, 0), 0) scale(0.4) rotate(var(--sr, 0deg)); }
+  from { opacity: 0; transform: translate3d(var(--sx,0), var(--sy,0), 0) scale(0.4) rotate(var(--sr,0deg)); }
   to { opacity: 1; transform: translate3d(0, 0, 0) scale(1) rotate(0deg); }
 }
 @keyframes splash-out {
@@ -248,4 +213,3 @@
     scroll-behavior: auto !important;
   }
 }
-

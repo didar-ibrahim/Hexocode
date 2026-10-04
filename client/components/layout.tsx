@@ -139,7 +139,7 @@ export function Navbar() {
                 <Link
                   href={item.href}
                   className={cn(
-                    'relative block whitespace-nowrap px-2 py-2 font-mono text-[10px] uppercase tracking-[0.15em] transition-colors lg:px-4 lg:text-[11px] lg:tracking-[0.22em]',
+                    'relative block whitespace-nowrap px-3 py-2 text-sm font-medium transition-colors lg:px-4',
                     active ? 'text-gold' : 'text-muted-foreground hover:text-foreground'
                   )}
                   aria-current={active ? 'page' : undefined}
@@ -373,5 +373,6 @@ export function PublicLayout({ children }: { children: ReactNode }) {
 }
 
 export { HexCta }
+
 
 
